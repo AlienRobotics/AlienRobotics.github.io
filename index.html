@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,7 +17,7 @@
     <!-- ===== Header ===== -->
     <header>
       <div class="logo" aria-label="Alien Robotics logo">
-        <img src="logo2.png" alt="Alien Robotics mark" class="logo-mark" />
+        <img class="logo-mark" data-src="logo2.png" alt="Alien Robotics mark" />
         <div class="logo-text">
           <span class="brand-line1">ALIEN</span>
           <span class="brand-line2">ROBOTICS</span>
@@ -28,15 +29,6 @@
       <label for="nav-toggle" class="hamburger" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
       </label>
-
-      <!-- <nav aria-label="Primary navigation">
-        <ul>
-          <li><a href="#">HOME</a></li>
-          <li><a href="#">ABOUT</a></li>
-          <li><a href="#">SOLUTIONS</a></li>
-          <li><a href="#">CONTACT</a></li>
-        </ul>
-      </nav> -->
     </header>
 
     <!-- ===== Hero ===== -->
@@ -54,13 +46,14 @@
 
       <aside class="illust-column" aria-label="Product illustration">
         <div class="card">
-          <img src="best2.png" alt="Robotics system placeholder" />
+          <img
+            class="comparison-img"
+            data-src="best2.png"
+            alt="Robotics system placeholder"
+          />
         </div>
       </aside>
     </main>
-
-    <!-- ===== Wave Transition ===== -->
-    <!-- <div class="wave-top" aria-hidden="true"></div> -->
 
     <!-- ===== Night Sky ===== -->
     <section class="night-sky" aria-label="Decorative night sky">
@@ -75,21 +68,19 @@
           fill="#ffffff"
         ></path>
       </svg>
-      <!-- 3 new absolute-positioned placeholders -->
-      <img class="tree-img" src="tree.png" alt="Tree silhouette" />
 
+      <img class="tree-img" data-src="tree.png" alt="Tree silhouette" />
       <img
         class="top-img"
         id="img1"
-        src="drone1.png"
+        data-src="drone1.png"
         alt="Top-right illustration"
       />
-      <img class="ufo-img" src="ufo.png" alt="ufo illustration" />
-
+      <img class="ufo-img" data-src="ufo.png" alt="ufo illustration" />
       <img
         class="bottom-img"
         id="img2"
-        src="demonstration2.png"
+        data-src="demonstration2.png"
         alt="Bottom-right illustration"
       />
 
@@ -97,25 +88,19 @@
       <div class="star-field" aria-hidden="true"></div>
     </section>
 
-    <!-- ===== Hill Section (overlaps night sky by 200 px) ===== -->
+    <!-- ===== Hill Section ===== -->
     <section class="hill" aria-hidden="true">
-      <!-- Curved ridge -->
       <svg class="hill-top" viewBox="0 0 1440 200" preserveAspectRatio="none">
-        <!-- tweak the control-points for a different silhouette -->
         <path
-          d="M 0 0 C 240 80 600 140 900 60 C 1180 10 1320 20 1440 80 L 1440 200 L 0 200 Z
-"
+          d="M 0 0 C 240 80 600 140 900 60 C 1180 10 1320 20 1440 80 L 1440 200 L 0 200 Z"
           fill="#063c20"
         />
       </svg>
-      <!-- (optional) future hill content goes here -->
     </section>
 
-    <!-- ===== Dirt Section (generated in JS) ===== -->
+    <!-- ===== Dirt Section & Showcase ===== -->
     <section id="dirt" class="dirt" aria-hidden="true">
-      <!-- ===== Showcase (now inside dirt) ===== -->
       <section class="showcase" aria-label="Feature showcase">
-        <!-- showcase text -->
         <h1
           style="
             color: white;
@@ -128,29 +113,35 @@
         </h1>
 
         <div class="showcase-video">
-          <video controls poster="cover.jpg">
-            <source src="untitled.mp4" type="video/mp4" />
-          </video>
+          <video
+            id="main-demo"
+            data-src="untitled.mp4"
+            data-poster="cover.jpg"
+            controls
+            preload="none"
+          ></video>
         </div>
         <div class="showcase-comparison">
           <img
-            src="zoomedout.jpg"
+            data-src="zoomedout.jpg"
             alt="Zoomed-out view"
             class="comparison-img comparison-out"
           />
           <span class="comparison-arrow" aria-hidden="true"></span>
           <img
-            src="zoomedin.png"
+            data-src="zoomedin.png"
             alt="Zoomed-in detail"
             class="comparison-img comparison-in"
           />
         </div>
-
-        <!-- ===== Footer ===== -->
       </section>
     </section>
 
-    <img class="skeleton" src="skeleton.png" alt="" />
+    <img
+      class="skeleton"
+      data-src="skeleton.png"
+      alt="Background skeleton graphic"
+    />
     <canvas id="lineCanvas"></canvas>
 
     <footer>
