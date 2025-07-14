@@ -116,3 +116,40 @@ document.addEventListener("DOMContentLoaded", () => {
     adjustDirtHeight();
   });
 });
+
+function drawConnector() {
+  const canvas = document.getElementById("lineCanvas");
+  const doc = document.documentElement;
+  // make canvas dimensions = full scrollable area
+  const fullW = Math.max(doc.scrollWidth, doc.clientWidth);
+  const fullH = Math.max(doc.scrollHeight, doc.clientHeight) - 800;
+  canvas.width = fullW;
+  canvas.height = fullH;
+  canvas.style.width = fullW + "px";
+  canvas.style.height = fullH + "px";
+
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, fullW, fullH);
+
+  const img1 = document.getElementById("img1");
+  const img2 = document.getElementById("img2");
+  const r1 = img1.getBoundingClientRect();
+  const r2 = img2.getBoundingClientRect();
+
+  // compute document‐relative coordinates by adding scroll offsets
+  const sX = r1.left + window.scrollX + r1.width * 0.575;
+  const sY = r1.top + window.scrollY + r1.height * 0.55;
+  const eX = r2.left + window.scrollX + r2.width * 0.35;
+  const eY = r2.top + window.scrollY + r2.height * 0.17;
+
+  ctx.beginPath();
+  ctx.moveTo(sX, sY);
+  ctx.lineTo(eX, eY);
+  ctx.strokeStyle = "red";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+// redraw on load and resize
+window.addEventListener("load", drawConnector);
+window.addEventListener("resize", drawConnector);
