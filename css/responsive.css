@@ -51,10 +51,10 @@
     display: flex;
   }
   .logo-text .brand-line1 {
-    font-size: 1.6rem;
+    font-size: 2rem;
   }
   .logo-text .brand-line2 {
-    font-size: 0.8rem;
+    font-size: 1rem;
     letter-spacing: 0.3em;
   }
   .logo-mark {
