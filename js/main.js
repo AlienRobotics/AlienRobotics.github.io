@@ -136,25 +136,46 @@ document.addEventListener("DOMContentLoaded", () => {
 // ─── After full page load: lazy‑load media & draw connector when images ready ─
 window.addEventListener("load", () => {
   // Lazy‑load images
-  document.querySelectorAll("img[data-src]").forEach((img) => {
-    img.src = img.dataset.src;
-    img.removeAttribute("data-src");
-  });
+  // 1. Find all images to swap
+  const imgs = Array.from(document.querySelectorAll("img[data-src]"));
 
-  // Lazy‑load video + poster
-  const video = document.getElementById("main-demo");
-  if (video) {
+  // 2. Create an array of Promises, one per image
+  const loadPromises = imgs.map(
+    (img) =>
+      new Promise((resolve) => {
+        // resolve immediately if already cached
+        if (img.complete && img.naturalWidth !== 0) {
+          resolve();
+        } else {
+          img.addEventListener("load", resolve, { once: true });
+          img.addEventListener("error", resolve, { once: true });
+        }
+
+        // start the load
+        img.src = img.dataset.src;
+        img.removeAttribute("data-src");
+      })
+  );
+
+  // 3. When *all* images have finished (loaded or errored), load the video
+  Promise.all(loadPromises).then(() => {
+    const video = document.getElementById("main-demo");
+    if (!video) return;
+
+    // set poster if you stashed it
     if (video.dataset.poster) {
       video.poster = video.dataset.poster;
       video.removeAttribute("data-poster");
     }
+
+    // actually append your <source> and kick off the load
     const srcEl = document.createElement("source");
     srcEl.src = video.dataset.src;
-    srcEl.type = "video/mp4";
+    srcEl.type = "video/webm";
     video.appendChild(srcEl);
     video.load();
     video.removeAttribute("data-src");
-  }
+  });
 
   // Wait for both images before drawing connector
   const img1 = document.getElementById("img1");
