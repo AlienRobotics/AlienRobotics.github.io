@@ -1,0 +1,477 @@
+/* ===== Header ===== */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 40px 80px;
+  width: 100vw;
+  padding: 0 calc(50vw - 720px);
+}
+.logo {
+  display: flex;
+  align-items: center;
+}
+.logo-mark {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+.logo-text .brand-line1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  display: block;
+}
+.logo-text .brand-line2 {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.4em;
+  display: block;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 48px;
+  align-items: center;
+}
+nav li {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.hamburger,
+#nav-toggle {
+  display: none;
+}
+
+/* ===== Hero ===== */
+main {
+  width: 100vw;
+  padding: 32px calc(50vw - 720px) 60px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "copy illust";
+  gap: 20px;
+  align-items: center;
+}
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  max-width: 540px;
+}
+.hero-copy h1 {
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.hero-copy h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.hero-copy p {
+  font-size: 1.05rem;
+  margin-bottom: 48px;
+}
+.cta-btn {
+  display: inline-block;
+  max-width: 540px;
+  background: var(--teal);
+  color: #fff;
+  padding: 16px 0;
+  border-radius: 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: center;
+  transition: background 0.25s;
+}
+.cta-btn:hover {
+  background: #236a82;
+}
+.illust-column {
+  display: flex;
+  justify-content: center;
+}
+.card {
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 1/1;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  clip-path: polygon(5% 0, 100% 0, 100% 85%, 95% 100%, 0 100%, 0 15%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card img {
+  width: 95%;
+  height: 95%;
+  object-fit: contain;
+}
+
+.night-sky {
+  position: relative;
+  /* ⬇︎ new gradient back-drop */
+  background: linear-gradient(
+    to bottom,
+    var(--night-top) 0%,
+    var(--night-mid) 55%,
+    var(--night-bottom) 100%
+  );
+  color: #fff;
+  height: 100vh;
+  overflow: visible;
+}
+
+/* ── Curve overlay ─────────────────────────────────────────── */
+.sky-curve {
+  position: absolute;
+  top: -2px; /* lift it up a hair so it overlaps the hero */
+  left: 0;
+  width: 100%;
+  height: 170px; /* a touch taller for extra overlap */
+  pointer-events: none;
+  z-index: 1; /* stars 0, curve 1, moon 2 */
+}
+
+/* keep stars behind curve */
+.star-field {
+  z-index: 0;
+}
+
+/* Stars sit behind the curve (z-index defaults to 0) */
+.star-field {
+  z-index: 0;
+}
+
+/* Moon */
+.moon {
+  position: absolute;
+  top: 70px; /* ↓ was -70px – now safely below the curve */
+  right: 12px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 35%,
+    #fff 0%,
+    #fff 55%,
+    #dce5ff 90%
+  );
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.45);
+  z-index: 2; /* floats above the white curve */
+}
+
+.moon::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* fill entire moon */
+  border-radius: 50%;
+  background:
+    /* large muted crater */ radial-gradient(
+      circle at 35% 45%,
+      rgba(0, 0, 0, 0.12) 0 28%,
+      transparent 30%
+    ),
+    /* mid crater */
+      radial-gradient(
+        circle at 60% 75%,
+        rgba(0, 0, 0, 0.1) 0 20%,
+        transparent 22%
+      ),
+    /* tiny craters */
+      radial-gradient(
+        circle at 25% 70%,
+        rgba(0, 0, 0, 0.15) 0 12%,
+        transparent 14%
+      ),
+    radial-gradient(
+      circle at 65% 65%,
+      rgba(0, 0, 0, 0.08) 0 10%,
+      transparent 12%
+    ),
+    radial-gradient(
+      circle at 78% 48%,
+      rgba(0, 0, 0, 0.12) 0 14%,
+      transparent 16%
+    ),
+    radial-gradient(
+      circle at 45% 20%,
+      rgba(0, 0, 0, 0.06) 0 10%,
+      transparent 12%
+    );
+  /* soft-edge blend */
+  mix-blend-mode: multiply; /* darkens without ugly borders */
+  opacity: 0.9; /* tone down if too contrasty */
+  pointer-events: none;
+}
+
+/* layout.css – append this */
+.night-sky::after {
+  content: "";
+  position: absolute;
+  top: calc(70px - 70px); /* ↓ was -70px – now safely below the curve */
+  right: calc(12px - 70px);
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+  z-index: 0; /* under stars, over gradient */
+}
+
+/* ——— Decorative placeholders in the night sky ——— */
+.tree-img {
+  position: relative;
+  transform: translateX(-40%);
+  top: 170px;
+  height: calc(100vh - 150px);
+  max-width: 90vw;
+  object-fit: contain;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.top-img {
+  /* sits near the top, right of the tree */
+  position: absolute;
+  top: 200px;
+  left: min(150px, 20vw);
+  width: min(300px, 50vw);
+
+  object-fit: contain;
+  z-index: 2;
+  pointer-events: none;
+}
+.ufo-img {
+  /* sits near the top, right of the tree */
+  position: absolute;
+  top: 300px;
+  right: 15vw;
+  width: 100px;
+
+  object-fit: contain;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.bottom-img {
+  /* anchors to the bottom-right corner   */
+  position: absolute;
+  left: min(calc(100vw - 10px - min(50vw, 50vh)), 60vw);
+
+  bottom: -10px;
+  width: 500px;
+  max-width: min(50vw, 50vh);
+  object-fit: contain;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Stars */
+.star-field {
+  position: absolute;
+  top: -150px;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 150px);
+  pointer-events: none;
+}
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.15;
+  animation: twinkle 5s ease-in-out infinite;
+}
+.star.small {
+  width: 1px;
+  height: 1px;
+}
+.star.medium {
+  width: 2px;
+  height: 2px;
+}
+.star.big {
+  width: 3px;
+  height: 3px;
+}
+
+@keyframes twinkle {
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* ===== Hill ===== */
+.hill {
+  position: relative;
+  background: #063c20; /* dark-green */
+  height: 250px; /* 200px overlaps + 600px visible */
+  z-index: 0; /* above stars (0), curve (1), moon/drone (2) */
+  pointer-events: none; /* hill is decorative only */
+}
+
+/* curved hill ridge SVG */
+.hill-top {
+  position: absolute;
+  top: -150px; /* tiny lift to guarantee no gap */
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 200px; /* same as overlap depth */
+  pointer-events: none;
+}
+
+/* ===== Dirt section base (solid fill — layers provide colour variation) */
+
+/* ===== Dirt base ===== */
+.dirt {
+  position: relative;
+  background: #063c20; /* deepest layer colour */
+  height: 1400px; /* 200-px overlap handled in margin-top */
+  margin-top: -250px; /* overlaps the hill */
+  z-index: 5;
+
+  pointer-events: none;
+}
+
+/* dirt SVG takes the full section size */
+.dirt > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* every gravel dot */
+.gravel {
+  position: absolute;
+  border-radius: 50%;
+  background: #7a7a7a; /* grey pebbles */
+  opacity: 0.6;
+}
+
+/* ===== CSS for .showcase ===== */
+/* overlay the showcase */
+.showcase {
+  position: absolute;
+  top: 250px; /* adjust this to slide it up/down over the dirt */
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 16px);
+  max-width: 1200px;
+  z-index: 4; /* above all dirt layers (z=2) and hill (z=3) */
+  pointer-events: auto; /* so video controls still work */
+  background: transparent;
+  padding: 0; /* you can re-add padding inside .showcase as needed */
+}
+
+/* tweak spacing if needed */
+.showcase-video,
+.showcase-comparison {
+  margin-top: 0;
+}
+
+/* Large video fills the width */
+.showcase-video video {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+/* Comparison row (desktop) */
+.showcase-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 32px;
+  gap: 24px;
+}
+
+/* Images share equal width */
+.comparison-img {
+  width: 45%;
+  max-width: 500px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Arrow between them */
+.comparison-arrow::before {
+  content: "→";
+  font-size: 5rem;
+  color: #fff;
+  display: inline-block;
+}
+
+/* ===== Tablet / Mobile (≤ 1100px) ===== */
+@media (max-width: 900px) {
+  .showcase {
+    padding: 32px 16px;
+  }
+  .showcase-comparison {
+    flex-direction: column;
+    margin-top: 24px;
+  }
+  .comparison-img {
+    width: 80%;
+    max-width: none;
+  }
+  .comparison-arrow {
+    margin: 16px 0;
+  }
+  .comparison-arrow::before {
+    content: "↓";
+  }
+}
+
+/* ===== Footer ===== */
+footer {
+  position: absolute;
+  color: #fff;
+  text-align: center;
+  margin-top: -112px;
+  z-index: 1000;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.footer-brand {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin: 32px 0 8px;
+  z-index: 10;
+}
+.copyright {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  z-index: 10;
+}
+
+.skeleton {
+  position: absolute;
+  left: 30px;
+  max-width: 175px;
+  width: 20vw;
+  opacity: 40%;
+  margin-top: -64px;
+  z-index: 1000;
+
+  transform: rotate(8deg);
+}

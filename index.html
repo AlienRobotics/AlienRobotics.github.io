@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alien Robotics – Autonomous Robotic Systems</title>
+
+    <!-- CSS order matters: tokens → base → layout → responsive  -->
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+
+  <body>
+    <!-- ===== Header ===== -->
+    <header>
+      <div class="logo" aria-label="Alien Robotics logo">
+        <img src="logo2.png" alt="Alien Robotics mark" class="logo-mark" />
+        <div class="logo-text">
+          <span class="brand-line1">ALIEN</span>
+          <span class="brand-line2">ROBOTICS</span>
+        </div>
+      </div>
+
+      <!-- mobile nav toggle -->
+      <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+      <label for="nav-toggle" class="hamburger" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </label>
+
+      <!-- <nav aria-label="Primary navigation">
+        <ul>
+          <li><a href="#">HOME</a></li>
+          <li><a href="#">ABOUT</a></li>
+          <li><a href="#">SOLUTIONS</a></li>
+          <li><a href="#">CONTACT</a></li>
+        </ul>
+      </nav> -->
+    </header>
+
+    <!-- ===== Hero ===== -->
+    <main>
+      <section class="hero-copy">
+        <h1>Autonomous<br />Robotic Systems</h1>
+        <h2>Advanced Defense Solutions</h2>
+        <p>
+          We develop cutting-edge autonomous systems for defense applications.
+          Our innovative robotic solutions, including turrets, drones, and more,
+          are designed to meet the demands of modern military operations.
+        </p>
+        <a href="#" class="cta-btn">Learn More</a>
+      </section>
+
+      <aside class="illust-column" aria-label="Product illustration">
+        <div class="card">
+          <img src="best2.png" alt="Robotics system placeholder" />
+        </div>
+      </aside>
+    </main>
+
+    <!-- ===== Wave Transition ===== -->
+    <!-- <div class="wave-top" aria-hidden="true"></div> -->
+
+    <!-- ===== Night Sky ===== -->
+    <section class="night-sky" aria-label="Decorative night sky">
+      <svg
+        class="sky-curve"
+        viewBox="0 0 1440 160"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M 1440 0 C 1080 0 720 160 0 160 V 0 H 1440 Z"
+          fill="#ffffff"
+        ></path>
+      </svg>
+      <!-- 3 new absolute-positioned placeholders -->
+      <img class="tree-img" src="tree.png" alt="Tree silhouette" />
+
+      <img class="top-img" src="drone1.png" alt="Top-right illustration" />
+      <img class="ufo-img" src="ufo.png" alt="ufo illustration" />
+
+      <img
+        class="bottom-img"
+        src="demonstration2.png"
+        alt="Bottom-right illustration"
+      />
+
+      <span class="moon" aria-hidden="true"></span>
+      <div class="star-field" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===== Hill Section (overlaps night sky by 200 px) ===== -->
+    <section class="hill" aria-hidden="true">
+      <!-- Curved ridge -->
+      <svg class="hill-top" viewBox="0 0 1440 200" preserveAspectRatio="none">
+        <!-- tweak the control-points for a different silhouette -->
+        <path
+          d="M 0 0 C 240 80 600 140 900 60 C 1180 10 1320 20 1440 80 L 1440 200 L 0 200 Z
+"
+          fill="#063c20"
+        />
+      </svg>
+      <!-- (optional) future hill content goes here -->
+    </section>
+
+    <!-- ===== Dirt Section (generated in JS) ===== -->
+    <section id="dirt" class="dirt" aria-hidden="true">
+      <!-- ===== Showcase (now inside dirt) ===== -->
+      <section class="showcase" aria-label="Feature showcase">
+        <!-- showcase text -->
+        <h1
+          style="
+            color: white;
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 32px;
+          "
+        >
+          Showcase
+        </h1>
+
+        <div class="showcase-video">
+          <video controls poster="cover.jpg">
+            <source src="untitled.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="showcase-comparison">
+          <img
+            src="zoomedout.jpg"
+            alt="Zoomed-out view"
+            class="comparison-img comparison-out"
+          />
+          <span class="comparison-arrow" aria-hidden="true"></span>
+          <img
+            src="zoomedin.png"
+            alt="Zoomed-in detail"
+            class="comparison-img comparison-in"
+          />
+        </div>
+
+        <!-- ===== Footer ===== -->
+      </section>
+    </section>
+
+    <img class="skeleton" src="skeleton.png" alt="" />
+
+    <footer>
+      <p class="footer-brand">ALIEN ROBOTICS</p>
+      <p class="copyright">© 2025 Alien Robotics. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js" defer></script>
+  </body>
+</html>
