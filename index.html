@@ -1,169 +1,767 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alien Robotics – Autonomous Robotic Systems</title>
+    <title>Alien Robotics - Advanced Autonomous Defense Systems</title>
+    <link rel="icon" href="logo.webp" type="image/webp" />
 
-    <link rel="icon" href="logo2.webp" type="image/webp" sizes="any" />
+    <style>
+      /* Reset & Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    <!-- CSS order matters: tokens → base → layout → responsive  -->
-    <link rel="stylesheet" href="css/variables.css" />
-    <link rel="stylesheet" href="css/base.css" />
-    <link rel="stylesheet" href="css/layout.css" />
-    <link rel="stylesheet" href="css/responsive.css" />
+      :root {
+        --primary: #1a1a2e;
+        --accent: #16a085;
+        --text-primary: #2c3e50;
+        --text-secondary: #7f8c8d;
+        --background: #ffffff;
+        --background-alt: #f8f9fa;
+        --border: #e1e8ed;
+        --shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        color: var(--text-primary);
+        background: var(--background);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* Container */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header */
+      header {
+        background: var(--background);
+        border-bottom: 1px solid var(--border);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: var(--primary);
+      }
+
+      .logo img {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1;
+      }
+
+      .logo-text .brand-main {
+        font-size: 1.5rem;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+
+      .logo-text .brand-sub {
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--text-primary);
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: var(--accent);
+      }
+
+      /* Mobile Menu Toggle */
+      .menu-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 8px;
+      }
+
+      .menu-toggle span {
+        width: 24px;
+        height: 2px;
+        background: var(--primary);
+        transition: all 0.3s;
+      }
+
+      /* Hero Section */
+      .hero {
+        padding: 120px 0 80px;
+        background: linear-gradient(
+          135deg,
+          var(--background) 0%,
+          var(--background-alt) 100%
+        );
+      }
+
+      .hero-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+      }
+
+      .hero-text h1 {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 900;
+        line-height: 1.1;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .hero-text .subtitle {
+        font-size: 1.25rem;
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 2rem;
+      }
+
+      .hero-text p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--text-secondary);
+        margin-bottom: 2.5rem;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 14px 32px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: 50px;
+        transition: all 0.3s;
+        display: inline-block;
+        border: 2px solid transparent;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #148f77;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--primary);
+        border-color: var(--border);
+      }
+
+      .btn-secondary:hover {
+        background: var(--background-alt);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .hero-image {
+        position: relative;
+      }
+
+      .hero-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      /* Features Section */
+      .features {
+        padding: 80px 0;
+        background: var(--background);
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .section-header h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .section-header p {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+      }
+
+      .feature-card {
+        padding: 2rem;
+        background: var(--background);
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        transition: all 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--accent);
+      }
+
+      .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--accent), #148f77);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        color: white;
+      }
+
+      .feature-card h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 0.75rem;
+      }
+
+      .feature-card p {
+        color: var(--text-secondary);
+        line-height: 1.7;
+      }
+
+      /* Showcase Section */
+      .showcase {
+        padding: 80px 0;
+        background: var(--background-alt);
+      }
+
+      .showcase-content {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .video-container {
+        position: relative;
+        width: 100%;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin-bottom: 16px;
+      }
+
+      .video-container video {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .video-caption {
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        line-height: 1.6;
+      }
+
+      .video-caption .indicator {
+        font-weight: 600;
+      }
+
+      .video-caption .yellow {
+        color: #f39c12;
+      }
+
+      .video-caption .red {
+        color: #e74c3c;
+      }
+
+      .comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      .comparison-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s;
+      }
+
+      .comparison-item:hover {
+        transform: scale(1.02);
+      }
+
+      .comparison-item img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .comparison-label {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 0.9rem;
+      }
+
+      /* Specs Section */
+      .specs {
+        padding: 80px 0;
+        background: var(--background);
+      }
+
+      .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+      }
+
+      .spec-item {
+        text-align: center;
+        padding: 2rem;
+        background: var(--background-alt);
+        border-radius: 16px;
+      }
+
+      .spec-value {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+      }
+
+      .spec-label {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      /* Footer */
+      footer {
+        padding: 60px 0 30px;
+        background: var(--primary);
+        color: white;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+
+      .footer-brand h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .footer-brand p {
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.7;
+      }
+
+      .footer-links h4 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: var(--accent);
+      }
+
+      .footer-links ul {
+        list-style: none;
+      }
+
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        line-height: 2;
+        transition: color 0.3s;
+      }
+
+      .footer-links a:hover {
+        color: white;
+      }
+
+      .footer-bottom {
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 968px) {
+        .hero-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+
+        .hero-text {
+          order: 2;
+        }
+
+        .hero-image {
+          order: 1;
+        }
+
+        .cta-buttons {
+          justify-content: center;
+        }
+
+        .footer-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          flex-direction: column;
+          padding: 1rem;
+          border-bottom: 1px solid var(--border);
+          box-shadow: var(--shadow);
+        }
+
+        .nav-links.active {
+          display: flex;
+        }
+
+        .menu-toggle {
+          display: flex;
+        }
+
+        .comparison-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .specs-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .section-header h2 {
+          font-size: 1.75rem;
+        }
+
+        .specs-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
   </head>
-
   <body>
-    <!-- ===== Header ===== -->
+    <!-- Header -->
     <header>
-      <div class="logo" aria-label="Alien Robotics logo">
-        <img
-          class="logo-mark"
-          data-src="logo2.webp"
-          alt="Alien Robotics mark"
-        />
-        <div class="logo-text">
-          <span class="brand-line1">ALIEN</span>
-          <span class="brand-line2">ROBOTICS</span>
-        </div>
-      </div>
-
-      <!-- mobile nav toggle -->
-      <input type="checkbox" id="nav-toggle" aria-hidden="true" />
-      <label for="nav-toggle" class="hamburger" aria-label="Toggle navigation">
-        <span></span><span></span><span></span>
-      </label>
+      <nav class="container">
+        <a href="#" class="logo">
+          <img src="logo.webp" alt="Alien Robotics" />
+          <div class="logo-text">
+            <span class="brand-main">ALIEN ROBOTICS</span>
+            <span class="brand-sub">DEFENSE SYSTEMS</span>
+          </div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#showcase">Showcase</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#specs">Specifications</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuToggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
     </header>
 
-    <!-- ===== Hero ===== -->
-    <main>
-      <section class="hero-copy">
-        <h1>Autonomous<br />Robotic Systems</h1>
-        <h2>Advanced Defense Solutions</h2>
-        <p>
-          We <strong>develop cutting-edge autonomous systems</strong> for
-          defense, offering <strong>innovative robotic solutions</strong> like
-          turrets and drones tailored for modern operations. Our designs
-          emphasize
-          <strong>cost-efficiency, scalability, and modularity</strong>. The
-          <strong>Sentinel project</strong> delivers last-resort protection
-          against <strong>FPV enemy drones</strong>, intercepting targets up to
-          <strong>100 mi/h</strong> within <strong>30–100 feet</strong>, using
-          <strong>automatically aimed lasers or shotguns</strong>. Its low cost
-          allows equipping every squad with two Sentinel systems.
-        </p>
-
-        <a href="#showcase" class="cta-btn">Learn More</a>
-      </section>
-
-      <aside class="illust-column" aria-label="Product illustration">
-        <div class="card">
-          <img
-            class="comparison-img"
-            data-src="best2.webp"
-            alt="Robotics system placeholder"
-          />
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Autonomous Robotic Defense Systems</h1>
+            <p class="subtitle">Next-Generation Protection Technology</p>
+            <p>
+              We develop cutting-edge autonomous systems for defense
+              applications, offering innovative robotic solutions including
+              advanced turrets and drones tailored for modern operations. Our
+              Excubitor project delivers last-resort protection against FPV
+              enemy drones with unprecedented accuracy and reliability.
+            </p>
+            <div class="cta-buttons">
+              <a href="#showcase" class="btn btn-primary">View Demo</a>
+              <a href="#specs" class="btn btn-secondary">Learn More</a>
+            </div>
+          </div>
+          <div class="hero-image">
+            <img src="hero.webp" alt="Alien Robotics System" />
+          </div>
         </div>
-      </aside>
-    </main>
-
-    <!-- ===== Night Sky ===== -->
-    <section class="night-sky" aria-label="Decorative night sky">
-      <svg
-        class="sky-curve"
-        viewBox="0 0 1440 160"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <path
-          d="M 1440 0 C 1080 0 720 160 0 160 V 0 H 1440 Z"
-          fill="#ffffff"
-        ></path>
-      </svg>
-
-      <img class="tree-img" data-src="tree.webp" alt="Tree silhouette" />
-      <img
-        class="top-img"
-        id="img1"
-        data-src="drone1.webp"
-        alt="Top-right illustration"
-      />
-      <img class="ufo-img" data-src="ufo.webp" alt="ufo illustration" />
-      <img
-        class="bottom-img"
-        id="img2"
-        data-src="demonstration2.webp"
-        alt="Bottom-right illustration"
-      />
-
-      <span class="moon" aria-hidden="true"></span>
-      <div class="star-field" aria-hidden="true"></div>
+      </div>
     </section>
 
-    <!-- ===== Hill Section ===== -->
-    <section class="hill" aria-hidden="true">
-      <svg class="hill-top" viewBox="0 0 1440 200" preserveAspectRatio="none">
-        <path
-          d="M 0 0 C 240 80 600 140 900 60 C 1180 10 1320 20 1440 80 L 1440 200 L 0 200 Z"
-          fill="#063c20"
-        />
-      </svg>
+    <!-- Showcase Section -->
+    <section class="showcase" id="showcase">
+      <div class="container">
+        <div class="section-header">
+          <h2>System Demonstration</h2>
+          <p>See the Excubitor system in action</p>
+        </div>
+        <div class="showcase-content">
+          <div class="video-container">
+            <video controls poster="cover.png">
+              <source src="video.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <p class="video-caption">
+            <span class="indicator yellow">Yellow circle</span> indicates the
+            center of the frame •
+            <span class="indicator red">Red circle</span> shows the predicted
+            laser position accounting for camera-offset and distance
+          </p>
+          <div class="comparison-grid">
+            <div class="comparison-item">
+              <img src="zoomedout.webp" alt="Wide angle view" />
+              <span class="comparison-label">Wide Angle View</span>
+            </div>
+            <div class="comparison-item">
+              <img src="zoomedin.webp" alt="Target acquisition" />
+              <span class="comparison-label">Target Acquisition</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- ===== Dirt Section & Showcase ===== -->
-    <section id="dirt" class="dirt" aria-hidden="true">
-      <section class="showcase" aria-label="Feature showcase">
-        <h1
-          id="showcase"
-          style="
-            color: white;
-            text-align: center;
-            font-size: 3em;
-            margin-bottom: 32px;
-          "
-        >
-          Showcase
-        </h1>
-
-        <div class="showcase-video">
-          <video
-            id="main-demo"
-            data-src="untitled.webm"
-            data-poster="cover.webp"
-            controls
-            preload="none"
-          ></video>
+    <!-- Features Section -->
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <h2>Advanced Capabilities</h2>
+          <p>Engineered for maximum efficiency and battlefield superiority</p>
         </div>
-        <div class="showcase-comparison">
-          <img
-            data-src="zoomedout.webp"
-            alt="Zoomed-out view"
-            class="comparison-img comparison-out"
-          />
-          <span class="comparison-arrow" aria-hidden="true"></span>
-          <img
-            data-src="zoomedin.webp"
-            alt="Zoomed-in detail"
-            class="comparison-img comparison-in"
-          />
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Rapid Response</h3>
+            <p>
+              The prototype currently intercepts targets moving up to 20 mi/h
+              with an effective engagement range of up to 200 feet.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Precision Targeting</h3>
+            <p>
+              Automatically aimed laser ensures maximum accuracy against FPV
+              drone threats.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">💰</div>
+            <h3>Cost Efficient</h3>
+            <p>
+              Low-cost design enables large scale production and deployment of
+              the Excubitor systems.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔧</div>
+            <h3>Modular Design</h3>
+            <p>
+              Scalable architecture allows for easy upgrades and customization
+              based on mission requirements.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3>AI-Powered</h3>
+            <p>
+              Advanced machine learning algorithms for threat identification and
+              tracking.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Reliable Defense</h3>
+            <p>
+              The Excubitor system provides last-resort protection when
+              conventional defenses fail.
+            </p>
+          </div>
         </div>
-      </section>
+      </div>
     </section>
 
-    <img
-      class="skeleton"
-      data-src="skeleton.webp"
-      alt="Background skeleton graphic"
-    />
-    <canvas id="lineCanvas"></canvas>
+    <!-- Specifications Section -->
+    <section class="specs" id="specs">
+      <div class="container">
+        <div class="section-header">
+          <h2>Current Technical Specifications</h2>
+          <p>Performance metrics that define battlefield superiority</p>
+        </div>
+        <div class="specs-grid">
+          <div class="spec-item">
+            <div class="spec-value">20</div>
+            <div class="spec-label">MPH Max Target Speed</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-value">200</div>
+            <div class="spec-label">Feet Max Engagement Range</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-value">&lt;1s</div>
+            <div class="spec-label">Target Acquisition</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <footer>
-      <p class="footer-brand">ALIEN ROBOTICS</p>
-      <p class="copyright">© 2025 Alien Robotics. All rights reserved.</p>
+    <!-- Footer -->
+    <footer id="contact">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3>ALIEN ROBOTICS</h3>
+            <p>
+              Leading the future of autonomous defense systems with innovative
+              solutions that emphasize cost-efficiency, scalability, and
+              modularity for modern military operations.
+            </p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 Alien Robotics. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
 
-    <script src="js/main.js" defer></script>
+    <script>
+      // Mobile menu toggle
+      document
+        .getElementById("menuToggle")
+        .addEventListener("click", function () {
+          document.getElementById("navLinks").classList.toggle("active");
+        });
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            const headerOffset = 80;
+            const elementPosition = target.offsetTop;
+            const offsetPosition = elementPosition - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth",
+            });
+          }
+          // Close mobile menu if open
+          document.getElementById("navLinks").classList.remove("active");
+        });
+      });
+
+      // Add scroll effect to header
+      let lastScroll = 0;
+      window.addEventListener("scroll", function () {
+        const header = document.querySelector("header");
+        const currentScroll = window.pageYOffset;
+
+        if (currentScroll > 50) {
+          header.style.boxShadow = "0 2px 20px rgba(0,0,0,0.1)";
+        } else {
+          header.style.boxShadow = "none";
+        }
+
+        lastScroll = currentScroll;
+      });
+    </script>
   </body>
 </html>
