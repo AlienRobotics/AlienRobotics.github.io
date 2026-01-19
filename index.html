@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alien Robotics - Advanced Autonomous Defense Systems</title>
+    <link rel="icon" href="logo.webp" type="image/webp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+      /* Reset & Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #0a1628;
+        --primary-light: #132744;
+        --accent: #d4a84b;
+        --accent-hover: #e8bc5f;
+        --accent-glow: rgba(212, 168, 75, 0.4);
+        --text-primary: #1a2332;
+        --text-secondary: #5a6a7a;
+        --text-light: #8a9aaa;
+        --background: #ffffff;
+        --background-alt: #f7f8fa;
+        --background-dark: #0a1628;
+        --border: #dce3eb;
+        --border-light: #e8edf3;
+        --shadow: 0 4px 24px rgba(10, 22, 40, 0.08);
+        --shadow-hover: 0 16px 48px rgba(10, 22, 40, 0.18);
+      }
+
+      body {
+        font-family: "Barlow", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #ffffff;
+        line-height: 1.7;
+        overflow-x: hidden;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background:
+          url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 50 50' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 25h50M25 0v50' stroke='%23ffffff' stroke-opacity='0.035' stroke-width='1'/%3E%3C/svg%3E"),
+          linear-gradient(180deg,
+            #0a1628 0%,
+            #0c1a2c 10%,
+            #0e1d31 25%,
+            #0c1927 45%,
+            #091420 65%,
+            #070f19 80%,
+            #050a12 100%
+          );
+        background-attachment: scroll, fixed;
+        min-height: 100vh;
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+
+      @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+        50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px rgba(212, 168, 75, 0.2); }
+      }
+
+      .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+
+      .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Container */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header */
+      header {
+        background: var(--primary);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        backdrop-filter: blur(16px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.1rem 0;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        text-decoration: none;
+        color: #ffffff;
+        transition: transform 0.3s ease;
+      }
+
+      .logo:hover {
+        transform: translateX(4px);
+      }
+
+      .logo img {
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 8px rgba(212, 168, 75, 0.3));
+      }
+
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1;
+      }
+
+      .logo-text .brand-main {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: #ffffff;
+      }
+
+      .logo-text .brand-sub {
+        font-family: "Barlow", sans-serif;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        margin-top: 3px;
+        text-transform: uppercase;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.75);
+        font-weight: 500;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        position: relative;
+        padding: 4px 0;
+      }
+
+      .nav-links a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: var(--accent);
+        transition: width 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--accent);
+      }
+
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      /* Mobile Menu Toggle */
+      .menu-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 8px;
+      }
+
+      .menu-toggle span {
+        width: 24px;
+        height: 2px;
+        background: #ffffff;
+        transition: all 0.3s;
+      }
+
+      /* Hero Section */
+      .hero {
+        padding: 160px 0 120px;
+        background: transparent;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(ellipse at 70% 20%, rgba(212, 168, 75, 0.08) 0%, transparent 50%),
+          radial-gradient(ellipse at 30% 80%, rgba(22, 42, 69, 0.3) 0%, transparent 50%);
+        pointer-events: none;
+      }
+
+      .hero-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-text h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(2.8rem, 5.5vw, 4rem);
+        font-weight: 700;
+        line-height: 1.05;
+        color: #ffffff;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.02em;
+        animation: fadeInUp 0.8s ease forwards;
+      }
+
+      .hero-text .subtitle {
+        font-size: 0.85rem;
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 1.75rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        animation: fadeInUp 0.8s ease 0.1s forwards;
+        opacity: 0;
+      }
+
+      .hero-text .subtitle::before {
+        content: '';
+        width: 24px;
+        height: 1px;
+        background: var(--accent);
+      }
+
+      .hero-text p {
+        font-size: 1.05rem;
+        line-height: 1.85;
+        color: rgba(255, 255, 255, 0.65);
+        margin-bottom: 2.5rem;
+        animation: fadeInUp 0.8s ease 0.2s forwards;
+        opacity: 0;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease 0.3s forwards;
+        opacity: 0;
+      }
+
+      .btn {
+        padding: 14px 32px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-decoration: none;
+        border-radius: 3px;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-block;
+        border: 1px solid transparent;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: var(--primary);
+      }
+
+      .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+      }
+
+      .btn-primary:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px var(--accent-glow);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.25);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .hero-image {
+        position: relative;
+        animation: fadeIn 1s ease 0.4s forwards;
+        opacity: 0;
+      }
+
+      .hero-image::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(135deg, var(--accent) 0%, transparent 50%, transparent 100%);
+        border-radius: 14px;
+        z-index: -1;
+        opacity: 0.5;
+      }
+
+      .hero-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 70px;
+      }
+
+      .section-header h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        letter-spacing: 0.04em;
+      }
+
+      .section-header p {
+        font-size: 1.05rem;
+        color: var(--text-secondary);
+        max-width: 500px;
+        margin: 0 auto;
+        line-height: 1.7;
+      }
+
+      /* Showcase Section */
+      .showcase {
+        padding: 100px 0 120px;
+        background: transparent;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .showcase::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(ellipse at 50% 30%, rgba(212, 168, 75, 0.04) 0%, transparent 60%);
+        pointer-events: none;
+      }
+
+      .section-divider {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(212, 168, 75, 0.15) 20%,
+          rgba(212, 168, 75, 0.25) 50%,
+          rgba(212, 168, 75, 0.15) 80%,
+          transparent 100%
+        );
+        margin: 0 auto;
+        max-width: 600px;
+      }
+
+      .showcase .section-header {
+        position: relative;
+        z-index: 1;
+      }
+
+      .showcase .section-header h2 {
+        color: #ffffff;
+      }
+
+      .showcase .section-header p {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .showcase-content {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      .video-container {
+        position: relative;
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        margin-bottom: 0;
+        background: #000;
+      }
+
+      .video-container::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, rgba(212, 168, 75, 0.3) 0%, transparent 30%, transparent 70%, rgba(212, 168, 75, 0.1) 100%);
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      .video-container::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        pointer-events: none;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      }
+
+      .video-container video {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .version-showcase {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+        margin-bottom: 50px;
+      }
+
+      .version-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .version-item.latest .video-container {
+        max-width: 380px;
+      }
+
+      .version-item.previous .video-container {
+        max-width: 100%;
+      }
+
+      .version-label {
+        font-family: "Barlow", sans-serif;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--accent);
+        margin-bottom: 20px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .version-label::before,
+      .version-label::after {
+        content: '';
+        width: 30px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(212, 168, 75, 0.5));
+      }
+
+      .version-label::after {
+        background: linear-gradient(90deg, rgba(212, 168, 75, 0.5), transparent);
+      }
+
+      .version-item .video-container {
+        margin-bottom: 0;
+        width: 100%;
+      }
+
+      .video-caption {
+        text-align: center;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 0;
+        line-height: 1.8;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .video-caption .indicator {
+        font-weight: 600;
+      }
+
+      .video-caption .yellow {
+        color: #e8a832;
+      }
+
+      .video-caption .red {
+        color: #dc5c5c;
+      }
+
+      /* Specs Section */
+      .specs {
+        padding: 100px 0 120px;
+        background: transparent;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .specs::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+          radial-gradient(ellipse at 20% 50%, rgba(212, 168, 75, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+      }
+
+      .specs .section-header {
+        position: relative;
+        z-index: 1;
+      }
+
+      .specs .section-header h2 {
+        color: #ffffff;
+      }
+
+      .specs .section-header p {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-top: 60px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .spec-item {
+        text-align: center;
+        padding: 2.75rem 2rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+
+      .spec-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 2px;
+        background: var(--accent);
+        opacity: 0;
+        transition: all 0.4s ease;
+      }
+
+      .spec-item:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(212, 168, 75, 0.3);
+        transform: translateY(-4px);
+      }
+
+      .spec-item:hover::before {
+        opacity: 1;
+        width: 60px;
+      }
+
+      .spec-value {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+        letter-spacing: 0.02em;
+        line-height: 1;
+        text-shadow: 0 0 40px var(--accent-glow);
+      }
+
+      .spec-label {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.55);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      /* Footer */
+      footer {
+        padding: 80px 0 50px;
+        background: transparent;
+        color: white;
+        position: relative;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .footer-brand {
+        max-width: 480px;
+      }
+
+      .footer-brand h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.35rem;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.15em;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .footer-brand p {
+        color: rgba(255, 255, 255, 0.45);
+        line-height: 1.85;
+        font-size: 0.9rem;
+      }
+
+      .footer-links h4 {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: var(--accent);
+      }
+
+      .footer-links ul {
+        list-style: none;
+      }
+
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        line-height: 2;
+        transition: color 0.3s;
+      }
+
+      .footer-links a:hover {
+        color: white;
+      }
+
+      .footer-bottom {
+        padding-top: 40px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.25);
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 968px) {
+        .hero-content {
+          grid-template-columns: 1fr;
+          text-align: center;
+          gap: 50px;
+          justify-items: center;
+        }
+
+        .hero-text {
+          order: 2;
+        }
+
+        .hero-text .subtitle {
+          justify-content: center;
+        }
+
+        .hero-image {
+          order: 1;
+          width: fit-content;
+          max-width: 350px;
+        }
+
+        .hero-image img {
+          width: 100%;
+        }
+
+        .cta-buttons {
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: var(--primary);
+          flex-direction: column;
+          padding: 1.5rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+          gap: 0.5rem;
+        }
+
+        .nav-links.active {
+          display: flex;
+        }
+
+        .nav-links a {
+          padding: 0.75rem 0;
+        }
+
+        .menu-toggle {
+          display: flex;
+        }
+
+        .specs-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .section-header h2 {
+          font-size: 1.75rem;
+        }
+
+        .specs-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <nav class="container">
+        <a href="#" class="logo">
+          <img src="logo.webp" alt="Alien Robotics" />
+          <div class="logo-text">
+            <span class="brand-main">ALIEN ROBOTICS</span>
+            <span class="brand-sub">DEFENSE SYSTEMS</span>
+          </div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#showcase">Showcase</a></li>
+          <li><a href="#specs">Specifications</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuToggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Autonomous Robotic Defense Systems</h1>
+            <p class="subtitle">Next-Generation Protection Technology</p>
+            <p>
+              We develop cutting-edge autonomous systems for defense
+              applications, offering innovative robotic solutions including
+              advanced turrets and drones tailored for modern operations. Our
+              Excubitor project delivers last-resort protection against FPV
+              enemy drones with unprecedented accuracy and reliability.
+            </p>
+            <div class="cta-buttons">
+              <a href="#showcase" class="btn btn-primary">View Demo</a>
+              <a href="#specs" class="btn btn-secondary">Learn More</a>
+            </div>
+          </div>
+          <div class="hero-image">
+            <img src="hero.webp" alt="Alien Robotics System" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Showcase Section -->
+    <section class="showcase" id="showcase">
+      <div class="container">
+        <div class="section-header">
+          <h2>System Demonstration</h2>
+          <p>See the Excubitor system in action</p>
+        </div>
+        <div class="showcase-content">
+          <div class="version-showcase">
+            <div class="version-item latest">
+              <h3 class="version-label">Latest Version</h3>
+              <div class="video-container">
+                <video controls poster="Version4.webp">
+                  <source src="Version4.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+            <div class="version-item previous">
+              <h3 class="version-label">Previous Version</h3>
+              <div class="video-container">
+                <video controls poster="Version3.webp">
+                  <source src="Version3.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+          <p class="video-caption">
+            <span class="indicator yellow">Yellow circle</span> indicates the
+            center of the frame •
+            <span class="indicator red">Red circle</span> shows the predicted
+            laser position accounting for camera-offset and distance
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Specifications Section -->
+    <section class="specs" id="specs">
+      <div class="container">
+        <div class="section-header">
+          <h2>Current Technical Specifications</h2>
+          <p>Performance metrics that define battlefield superiority</p>
+        </div>
+        <div class="specs-grid">
+          <div class="spec-item">
+            <div class="spec-value">20</div>
+            <div class="spec-label">MPH Max Target Speed</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-value">200</div>
+            <div class="spec-label">Feet Max Engagement Range</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-value">&lt;1s</div>
+            <div class="spec-label">Target Acquisition</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Footer -->
+    <footer id="contact">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3>ALIEN ROBOTICS</h3>
+            <p>
+              Leading the future of autonomous defense systems with innovative
+              solutions that emphasize cost-efficiency, scalability, and
+              modularity for modern military operations.
+            </p>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 Alien Robotics. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile menu toggle
+      document
+        .getElementById("menuToggle")
+        .addEventListener("click", function () {
+          document.getElementById("navLinks").classList.toggle("active");
+        });
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            const headerOffset = 80;
+            const elementPosition = target.offsetTop;
+            const offsetPosition = elementPosition - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth",
+            });
+          }
+          // Close mobile menu if open
+          document.getElementById("navLinks").classList.remove("active");
+        });
+      });
+
+      // Add scroll effect to header
+      let lastScroll = 0;
+      window.addEventListener("scroll", function () {
+        const header = document.querySelector("header");
+        const currentScroll = window.pageYOffset;
+
+        if (currentScroll > 50) {
+          header.style.boxShadow = "0 4px 32px rgba(0,0,0,0.4)";
+          header.style.background = "rgba(4, 8, 16, 0.95)";
+        } else {
+          header.style.boxShadow = "none";
+          header.style.background = "var(--primary)";
+        }
+
+        lastScroll = currentScroll;
+      });
+
+      // Scroll-triggered animations
+      const observerOptions = {
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.classList.add('visible');
+            }, index * 100);
+          }
+        });
+      }, observerOptions);
+
+      // Observe spec items
+      document.querySelectorAll('.spec-item').forEach((item, index) => {
+        item.classList.add('animate-on-scroll');
+        item.style.transitionDelay = `${index * 0.12}s`;
+        observer.observe(item);
+      });
+
+      // Observe version items
+      document.querySelectorAll('.version-item').forEach((item, index) => {
+        item.classList.add('animate-on-scroll');
+        item.style.transitionDelay = `${index * 0.15}s`;
+        observer.observe(item);
+      });
+    </script>
+  </body>
+</html>
