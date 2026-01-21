@@ -250,7 +250,7 @@
 
       /* Hero Section */
       .hero {
-        padding: 120px 0 100px;
+        padding: 160px 0 120px;
         background: transparent;
         position: relative;
         overflow: hidden;
@@ -397,12 +397,9 @@
         position: relative;
         animation: fadeIn 1s ease 0.4s forwards;
         opacity: 0;
-        max-width: 420px;
-        justify-self: center;
       }
 
-      .hero-image img,
-      .hero-image video {
+      .hero-image img {
         width: 100%;
         height: auto;
         border-radius: 12px;
@@ -795,7 +792,12 @@
 
         .hero-image {
           order: 1;
+          width: fit-content;
           max-width: 350px;
+        }
+
+        .hero-image img {
+          width: 100%;
         }
 
         .cta-buttons {
@@ -862,6 +864,7 @@
           </div>
         </a>
         <ul class="nav-links" id="navLinks">
+          <li><a href="#showcase">Showcase</a></li>
           <li><a href="#specs">Specifications</a></li>
         </ul>
         <button class="menu-toggle" id="menuToggle">
@@ -887,14 +890,12 @@
               enemy drones with unprecedented accuracy and reliability.
             </p>
             <div class="cta-buttons">
-              <a href="#specs" class="btn btn-primary">Learn More</a>
+              <a href="#showcase" class="btn btn-primary">View Demo</a>
+              <a href="#specs" class="btn btn-secondary">Learn More</a>
             </div>
           </div>
           <div class="hero-image">
-            <video autoplay muted loop playsinline poster="Version4.webp">
-              <source src="Version4.webm" type="video/webm" />
-              Your browser does not support the video tag.
-            </video>
+            <img src="hero.webp" alt="Alien Robotics System" />
           </div>
         </div>
       </div>
@@ -902,7 +903,7 @@
 
     <div class="section-divider"></div>
 
-    <!-- System Demonstration Section -->
+    <!-- Showcase Section -->
     <section class="showcase" id="showcase">
       <div class="container">
         <div class="section-header">
@@ -911,6 +912,15 @@
         </div>
         <div class="showcase-content">
           <div class="version-showcase">
+            <div class="version-item latest">
+              <h3 class="version-label">Latest Version</h3>
+              <div class="video-container">
+                <video controls poster="Version4.webp">
+                  <source src="Version4.webm" type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
             <div class="version-item previous">
               <h3 class="version-label">Previous Version</h3>
               <div class="video-container">
