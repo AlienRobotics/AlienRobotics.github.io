@@ -587,7 +587,7 @@
       }
 
       .version-item .video-container {
-        margin-bottom: 0;
+        margin-bottom: 20px;
         width: 100%;
       }
 
@@ -919,14 +919,26 @@
                   Your browser does not support the video tag.
                 </video>
               </div>
+              <p class="video-caption">
+                <span class="indicator yellow">Yellow circle</span> indicates the
+                center of the frame •
+                <span class="indicator red">Red circle</span> shows the predicted
+                laser position accounting for camera-offset and distance
+              </p>
+            </div>
+            <div class="version-item">
+              <h3 class="version-label">Tracking Algorithm Demonstration</h3>
+              <div class="video-container">
+                <video controls>
+                  <source src="keyPointDemonstration.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <p class="video-caption">
+                <span class="indicator" style="color: #a855f7;">Purple circles</span> are keypoints tracked across frames
+              </p>
             </div>
           </div>
-          <p class="video-caption">
-            <span class="indicator yellow">Yellow circle</span> indicates the
-            center of the frame •
-            <span class="indicator red">Red circle</span> shows the predicted
-            laser position accounting for camera-offset and distance
-          </p>
         </div>
       </div>
     </section>
