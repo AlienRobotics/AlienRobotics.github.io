@@ -98,7 +98,8 @@
       }
 
       @keyframes bounce {
-        0%, 100% {
+        0%,
+        100% {
           transform: translateY(0);
         }
         50% {
@@ -424,7 +425,9 @@
         bottom: 30px;
         left: 50%;
         transform: translateX(-50%);
-        animation: bounce 1.5s ease-in-out infinite, fadeIn 1s ease 1s forwards;
+        animation:
+          bounce 1.5s ease-in-out infinite,
+          fadeIn 1s ease 1s forwards;
         opacity: 0;
         cursor: pointer;
         z-index: 100;
@@ -918,8 +921,8 @@
               We develop cutting-edge autonomous systems for defense
               applications, offering innovative robotic solutions including
               advanced turrets and drones tailored for modern operations. Our
-              Excubitor project delivers last-resort protection against FPV
-              enemy drones with unprecedented accuracy and reliability.
+              Excubitor project delivers cost-effective, last-resort protection
+              against FPV drones with accuracy and reliability.
             </p>
             <div class="cta-buttons">
               <a href="#specs" class="btn btn-primary">Learn More</a>
@@ -960,10 +963,11 @@
                 </video>
               </div>
               <p class="video-caption">
-                <span class="indicator yellow">Yellow circle</span> indicates the
-                center of the frame •
-                <span class="indicator red">Red circle</span> shows the predicted
-                laser position accounting for camera-offset and distance
+                <span class="indicator yellow">Yellow circle</span> indicates
+                the center of the frame •
+                <span class="indicator red">Red circle</span> shows the
+                predicted laser position accounting for camera-offset and
+                distance
               </p>
             </div>
             <div class="version-item">
@@ -975,7 +979,10 @@
                 </video>
               </div>
               <p class="video-caption">
-                <span class="indicator" style="color: #a855f7;">Purple circles</span> are keypoints tracked across frames
+                <span class="indicator" style="color: #a855f7"
+                  >Purple circles</span
+                >
+                are keypoints tracked across frames
               </p>
             </div>
           </div>
