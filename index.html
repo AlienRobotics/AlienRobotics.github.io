@@ -97,6 +97,15 @@
         }
       }
 
+      @keyframes bounce {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(8px);
+        }
+      }
+
       @keyframes pulse-glow {
         0%,
         100% {
@@ -408,6 +417,31 @@
         border-radius: 12px;
         box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
         border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .scroll-indicator {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: bounce 1.5s ease-in-out infinite, fadeIn 1s ease 1s forwards;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 100;
+        transition: opacity 0.3s ease;
+      }
+
+      .scroll-indicator.hidden {
+        opacity: 0 !important;
+        pointer-events: none;
+      }
+
+      .scroll-indicator svg {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 2;
       }
 
       .section-header {
@@ -862,6 +896,7 @@
           </div>
         </a>
         <ul class="nav-links" id="navLinks">
+          <li><a href="#showcase">Showcase</a></li>
           <li><a href="#specs">Specifications</a></li>
         </ul>
         <button class="menu-toggle" id="menuToggle">
@@ -898,6 +933,11 @@
           </div>
         </div>
       </div>
+      <a href="#showcase" class="scroll-indicator">
+        <svg viewBox="0 0 24 24">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </a>
     </section>
 
     <div class="section-divider"></div>
@@ -1030,6 +1070,14 @@
         } else {
           header.style.boxShadow = "none";
           header.style.background = "var(--primary)";
+        }
+
+        // Hide scroll indicator on scroll
+        const scrollIndicator = document.querySelector(".scroll-indicator");
+        if (currentScroll > 50) {
+          scrollIndicator.classList.add("hidden");
+        } else {
+          scrollIndicator.classList.remove("hidden");
         }
 
         lastScroll = currentScroll;
