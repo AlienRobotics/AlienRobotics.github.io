@@ -550,6 +550,15 @@
         display: block;
       }
 
+      .latest-note {
+        text-align: center;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 16px;
+        margin-bottom: 0;
+        font-style: italic;
+      }
+
       .version-showcase {
         display: flex;
         flex-direction: column;
@@ -881,7 +890,8 @@
           </div>
         </a>
         <ul class="nav-links" id="navLinks">
-          <li><a href="#showcase">Showcase</a></li>
+          <li><a href="#latest">Latest</a></li>
+          <li><a href="#showcase">Past Versions</a></li>
           <li><a href="#specs">Specifications</a></li>
         </ul>
         <button class="menu-toggle" id="menuToggle">
@@ -907,7 +917,7 @@
               against FPV drones with accuracy and reliability.
             </p>
             <div class="cta-buttons">
-              <a href="#showcase" class="btn btn-primary">Learn More</a>
+              <a href="#latest" class="btn btn-primary">Learn More</a>
             </div>
           </div>
           <div class="hero-image">
@@ -918,7 +928,7 @@
           </div>
         </div>
       </div>
-      <a href="#showcase" class="scroll-indicator">
+      <a href="#latest" class="scroll-indicator">
         <svg viewBox="0 0 24 24">
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
@@ -927,12 +937,36 @@
 
     <div class="section-divider"></div>
 
+    <!-- Latest Version Section -->
+    <section class="showcase" id="latest">
+      <div class="container">
+        <div class="section-header">
+          <h2>Multi-Target Demonstration</h2>
+          <p>Autonomous tracking and engagement across multiple targets</p>
+        </div>
+        <div class="showcase-content" style="max-width: 720px;">
+          <div class="version-item">
+            <h3 class="version-label">Latest Version</h3>
+            <div class="video-container">
+              <video controls>
+                <source src="Version5.webm" type="video/webm" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <p class="latest-note">*Videos were recorded at 2 separate times</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
     <!-- System Demonstration Section -->
     <section class="showcase" id="showcase">
       <div class="container">
         <div class="section-header">
-          <h2>System Demonstration</h2>
-          <p>See the Excubitor system in action</p>
+          <h2>Past Versions</h2>
+          <p>Previous iterations of the Excubitor system</p>
         </div>
         <div class="showcase-content">
           <div class="version-showcase">
