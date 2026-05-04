@@ -550,6 +550,119 @@
         display: block;
       }
 
+      .video-container.portrait {
+        max-width: 360px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .feature-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .feature-video {
+        max-width: 420px;
+        justify-self: center;
+        width: 100%;
+      }
+
+      .feature-video video {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 12px;
+        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .feature-text .subtitle {
+        font-size: 0.85rem;
+        color: var(--accent);
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .feature-text .subtitle::before {
+        content: "";
+        width: 24px;
+        height: 1px;
+        background: var(--accent);
+      }
+
+      .feature-text h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(2.2rem, 4vw, 3rem);
+        font-weight: 700;
+        line-height: 1.1;
+        color: #ffffff;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.02em;
+      }
+
+      .feature-text p {
+        font-size: 1.05rem;
+        line-height: 1.85;
+        color: rgba(255, 255, 255, 0.65);
+      }
+
+      @media (max-width: 968px) {
+        .feature-split {
+          grid-template-columns: 1fr;
+          gap: 50px;
+          text-align: center;
+          justify-items: center;
+        }
+
+        .feature-text .subtitle {
+          justify-content: center;
+        }
+      }
+
+      .feature-graphic {
+        max-width: 540px;
+        justify-self: center;
+        width: 100%;
+      }
+
+      .feature-graphic .graphic-frame {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .feature-graphic iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+      }
+
+      @media (max-width: 968px) {
+        .feature-split-reverse .feature-text {
+          order: 2;
+        }
+        .feature-split-reverse .feature-graphic {
+          order: 1;
+        }
+      }
+
       .latest-note {
         text-align: center;
         font-size: 0.75rem;
@@ -889,11 +1002,7 @@
             <span class="brand-sub">DEFENSE SYSTEMS</span>
           </div>
         </a>
-        <ul class="nav-links" id="navLinks">
-          <li><a href="#latest">Latest</a></li>
-          <li><a href="#showcase">Past Versions</a></li>
-          <li><a href="#specs">Specifications</a></li>
-        </ul>
+        <ul class="nav-links" id="navLinks"></ul>
         <button class="menu-toggle" id="menuToggle">
           <span></span>
           <span></span>
@@ -910,19 +1019,20 @@
             <h1>Excubitor</h1>
             <p class="subtitle">Next-Generation Defense Technology</p>
             <p>
-              We develop cutting-edge autonomous systems for defense
-              applications, offering innovative robotic solutions including
-              advanced turrets and drones tailored for modern operations. Our
-              Excubitor project delivers cost-effective, last-resort protection
-              against FPV drones with accuracy and reliability.
+              Excubitor — our first system — is an autonomous turret that
+              detects and neutralizes fast-moving aerial and ground targets at a
+              fraction of the cost of an incoming drone swarm. Future versions
+              deploy as networks of turrets and supporting modules, fusing
+              data from ground and airborne sensors into coordinated responses
+              across the full system.
             </p>
             <div class="cta-buttons">
               <a href="#latest" class="btn btn-primary">Learn More</a>
             </div>
           </div>
           <div class="hero-image">
-            <video autoplay muted loop playsinline poster="Version4.webp">
-              <source src="Version4.webm" type="video/webm" />
+            <video autoplay muted loop playsinline>
+              <source src="DroneShoot.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
@@ -937,23 +1047,32 @@
 
     <div class="section-divider"></div>
 
-    <!-- Latest Version Section -->
+    <!-- Multi-Target Engagement Section -->
     <section class="showcase" id="latest">
       <div class="container">
-        <div class="section-header">
-          <h2>Multi-Target Demonstration</h2>
-          <p>Autonomous tracking and engagement across multiple targets</p>
-        </div>
-        <div class="showcase-content" style="max-width: 720px;">
-          <div class="version-item">
-            <h3 class="version-label">Latest Version</h3>
-            <div class="video-container">
-              <video controls>
-                <source src="Version5.webm" type="video/webm" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-            <p class="latest-note">*Videos were recorded at 2 separate times</p>
+        <div class="feature-split">
+          <div class="feature-video">
+            <video
+              muted
+              loop
+              playsinline
+              controls
+              preload="auto"
+              poster="MultiTargetShoot.webp"
+            >
+              <source src="MultiTargetShoot.webm" type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="feature-text">
+            <p class="subtitle">Multi-Target Engagement</p>
+            <h2>Built for Swarms</h2>
+            <p>
+              Excubitor handles the full engagement loop autonomously — scanning
+              the scene, identifying every target in frame, prioritizing them
+              by threat, and engaging each in sequence at machine reaction
+              speed.
+            </p>
           </div>
         </div>
       </div>
@@ -961,7 +1080,36 @@
 
     <div class="section-divider"></div>
 
-    <!-- System Demonstration Section -->
+    <!-- Networked Coordination Section -->
+    <section class="showcase" id="coordination">
+      <div class="container">
+        <div class="feature-split feature-split-reverse">
+          <div class="feature-text">
+            <p class="subtitle">The Coordination Platform</p>
+            <h2>More than a turret.</h2>
+            <p>
+              Excubitor is the first module. The next step is a network
+              platform that coordinates distributed inputs — video, infrared,
+              and human speech — scaling one turret into a defense against an
+              entire swarm.
+            </p>
+          </div>
+          <div class="feature-graphic">
+            <div class="graphic-frame">
+              <iframe
+                src="graphics/swarm-coordination/index.html"
+                title="Networked coordination animation"
+                loading="lazy"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- Past Versions Section -->
     <section class="showcase" id="showcase">
       <div class="container">
         <div class="section-header">
@@ -1008,43 +1156,12 @@
 
     <div class="section-divider"></div>
 
-    <!-- Specifications Section -->
-    <section class="specs" id="specs">
-      <div class="container">
-        <div class="section-header">
-          <h2>Current Technical Specifications</h2>
-          <p>Performance metrics that define battlefield superiority</p>
-        </div>
-        <div class="specs-grid">
-          <div class="spec-item">
-            <div class="spec-value">20</div>
-            <div class="spec-label">MPH Max Target Speed</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-value">200</div>
-            <div class="spec-label">Feet Max Engagement Range</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-value">&lt;1s</div>
-            <div class="spec-label">Target Acquisition</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="section-divider"></div>
-
     <!-- Footer -->
     <footer id="contact">
       <div class="container">
         <div class="footer-content">
           <div class="footer-brand">
             <h3>ALIEN ROBOTICS</h3>
-            <p>
-              Leading the future of autonomous defense systems with innovative
-              solutions that emphasize cost-efficiency, scalability, and
-              modularity for modern military operations.
-            </p>
           </div>
         </div>
         <div class="footer-bottom">
@@ -1105,6 +1222,76 @@
 
         lastScroll = currentScroll;
       });
+
+      // Multi-target engagement video: play when >=50% visible, unmute at 25% on first user gesture
+      const featureVideoContainer = document.querySelector(".feature-video");
+      const featureVideo = featureVideoContainer
+        ? featureVideoContainer.querySelector("video")
+        : null;
+      if (featureVideo && featureVideoContainer) {
+        featureVideo.muted = true;
+        featureVideo.volume = 0.25;
+
+        const tryPlay = () => {
+          const p = featureVideo.play();
+          if (p && typeof p.catch === "function") {
+            p.catch(() => {
+              featureVideo.muted = true;
+              featureVideo.play().catch(() => {});
+            });
+          }
+        };
+
+        const visibilityObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.intersectionRatio >= 0.5) {
+                tryPlay();
+              } else if (entry.intersectionRatio < 0.25) {
+                featureVideo.pause();
+              }
+            });
+          },
+          { threshold: [0, 0.25, 0.5, 0.75, 1] },
+        );
+        visibilityObserver.observe(featureVideoContainer);
+
+        const unmuteOnGesture = () => {
+          if (!featureVideo.paused) {
+            featureVideo.muted = false;
+            featureVideo.volume = 0.25;
+          }
+          ["pointerdown", "keydown", "touchstart", "scroll"].forEach((evt) =>
+            window.removeEventListener(evt, unmuteOnGesture, true),
+          );
+        };
+        ["pointerdown", "keydown", "touchstart", "scroll"].forEach((evt) =>
+          window.addEventListener(evt, unmuteOnGesture, {
+            capture: true,
+            once: false,
+            passive: true,
+          }),
+        );
+      }
+
+      // Past Versions videos: pause when scrolled out of view (<50% visible). Do not auto-start.
+      document
+        .querySelectorAll("#showcase .video-container video")
+        .forEach((vid) => {
+          const container = vid.closest(".video-container");
+          if (!container) return;
+          const pauseObserver = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.intersectionRatio < 0.5 && !vid.paused) {
+                  vid.pause();
+                }
+              });
+            },
+            { threshold: [0, 0.25, 0.5, 0.75, 1] },
+          );
+          pauseObserver.observe(container);
+        });
 
       // Scroll-triggered animations
       const observerOptions = {
