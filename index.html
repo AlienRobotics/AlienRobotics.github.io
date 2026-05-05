@@ -989,6 +989,137 @@
           grid-template-columns: 1fr;
         }
       }
+
+      /* === Swarm coordination animation (inlined) === */
+      .swarm-host {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #000000;
+        overflow: hidden;
+        font-family: "Barlow", sans-serif;
+        color: #ffffff;
+      }
+
+      .swarm-host .stage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #000000;
+        overflow: hidden;
+      }
+
+      .swarm-host .stage::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 78% 65%,
+          rgba(212, 168, 75, 0.08) 0%,
+          transparent 55%
+        );
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .swarm-host canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .swarm-host .hud {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 3;
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: rgba(212, 168, 75, 0.85);
+      }
+
+      .swarm-host .hud .corner {
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        border: 1px solid rgba(212, 168, 75, 0.45);
+      }
+      .swarm-host .hud .corner.tl {
+        top: 18px;
+        left: 18px;
+        border-right: none;
+        border-bottom: none;
+      }
+      .swarm-host .hud .corner.tr {
+        top: 18px;
+        right: 18px;
+        border-left: none;
+        border-bottom: none;
+      }
+      .swarm-host .hud .corner.bl {
+        bottom: 18px;
+        left: 18px;
+        border-right: none;
+        border-top: none;
+      }
+      .swarm-host .hud .corner.br {
+        bottom: 18px;
+        right: 18px;
+        border-left: none;
+        border-top: none;
+      }
+
+      .swarm-host .hud-text {
+        position: absolute;
+        font-size: clamp(0.6rem, 0.9vw, 0.78rem);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .swarm-host .hud-text .dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: #d4a84b;
+        border-radius: 50%;
+        margin-right: 8px;
+        vertical-align: middle;
+        box-shadow: 0 0 8px rgba(212, 168, 75, 0.8);
+      }
+
+      .swarm-host .hud-text.threat .dot {
+        background: #dc5c5c;
+        box-shadow: 0 0 8px rgba(220, 92, 92, 0.8);
+      }
+
+      .swarm-host .hud-status {
+        top: 30px;
+        left: 50px;
+      }
+
+      .swarm-host .hud-incoming {
+        top: 30px;
+        right: 50px;
+      }
+      .swarm-host .hud-incoming .num {
+        color: #dc5c5c;
+        font-weight: 800;
+      }
+
+      .swarm-host .hud-phase {
+        bottom: 30px;
+        left: 50px;
+        color: rgba(212, 168, 75, 0.95);
+      }
+
+      .swarm-host .hud-net {
+        bottom: 30px;
+        right: 50px;
+        color: rgba(255, 255, 255, 0.55);
+      }
     </style>
   </head>
   <body>
@@ -1096,11 +1227,32 @@
           </div>
           <div class="feature-graphic">
             <div class="graphic-frame">
-              <iframe
-                src="graphics/swarm-coordination/index.html"
-                title="Networked coordination animation"
-                loading="lazy"
-              ></iframe>
+              <div class="swarm-host">
+                <div class="stage" id="stage">
+                  <canvas id="bg"></canvas>
+                  <canvas id="fx"></canvas>
+                  <div class="hud">
+                    <div class="corner tl"></div>
+                    <div class="corner tr"></div>
+                    <div class="corner bl"></div>
+                    <div class="corner br"></div>
+
+                    <div class="hud-text hud-status" id="hudStatus">
+                      <span class="dot"></span><span id="hudStatusText">SCANNING</span>
+                    </div>
+                    <div class="hud-text threat hud-incoming" id="hudIncoming">
+                      <span class="dot"></span>INCOMING
+                      <span class="num" id="hudCount">00</span>
+                    </div>
+                    <div class="hud-text hud-phase" id="hudPhase">
+                      <span id="hudPhaseText">STANDBY</span>
+                    </div>
+                    <div class="hud-text hud-net" id="hudNet">
+                      NET-LINK ACTIVE — 10 NODES
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1322,6 +1474,1036 @@
         item.style.transitionDelay = `${index * 0.15}s`;
         observer.observe(item);
       });
+    </script>
+    <script>
+      (() => {
+        const stage = document.getElementById("stage");
+        const bgCanvas = document.getElementById("bg");
+        const fxCanvas = document.getElementById("fx");
+        const bgCtx = bgCanvas.getContext("2d");
+        const fxCtx = fxCanvas.getContext("2d");
+
+        // Reference design size — 1:1
+        const REF_W = 1080;
+        const REF_H = 1080;
+
+        let DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+        function resize() {
+          const rect = stage.getBoundingClientRect();
+          const targetW = rect.width;
+          const targetH = rect.height;
+          DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+          [bgCanvas, fxCanvas].forEach((c) => {
+            c.width = Math.floor(targetW * DPR);
+            c.height = Math.floor(targetH * DPR);
+            c.style.width = targetW + "px";
+            c.style.height = targetH + "px";
+          });
+
+          // Fit reference space (1280x720) into the canvas while preserving aspect.
+          const sx = (targetW * DPR) / REF_W;
+          const sy = (targetH * DPR) / REF_H;
+          const scale = Math.min(sx, sy);
+          const drawW = REF_W * scale;
+          const drawH = REF_H * scale;
+          const offX = (targetW * DPR - drawW) / 2;
+          const offY = (targetH * DPR - drawH) / 2;
+
+          [bgCtx, fxCtx].forEach((ctx) => {
+            ctx.setTransform(scale, 0, 0, scale, offX, offY);
+          });
+        }
+
+        window.addEventListener("resize", resize);
+        resize();
+
+        const W = REF_W;
+        const H = REF_H;
+
+        // Loop length — entire animation is deterministic in cycle time so it
+        // loops PERFECTLY seamlessly when we wrap cycleT.
+        const CYCLE = 14.0; // seconds
+
+        // Phase timings within one cycle (seconds)
+        const PHASE = {
+          detect: 1.6,
+          comms: 2.6,
+          assign: 4.0,
+          engage: 5.2,
+          engageEnd: 11.4,
+          reform: 11.0,
+          loopEnd: CYCLE,
+        };
+
+        // Defender nodes (right-side ground)
+        const GROUND_Y = 880;
+        const defenders = [
+          { x: 660, y: GROUND_Y },
+          { x: 740, y: GROUND_Y - 18 },
+          { x: 820, y: GROUND_Y - 8 },
+          { x: 900, y: GROUND_Y - 22 },
+          { x: 980, y: GROUND_Y - 4 },
+        ].map((p, i) => ({ ...p, id: i }));
+
+        // Reconnaissance drones — airborne, patrolling forward of the defenders.
+        // Motion is periodic with period CYCLE so they're at the same position
+        // at the seam.
+        const recons = [
+          { id: 0, cx: 600, cy: 210, ax: 110, ay: 16, phase: 0 },
+          { id: 1, cx: 380, cy: 280, ax: 90, ay: 14, phase: Math.PI * 0.7 },
+        ];
+
+        function reconPosition(r, cycleT) {
+          const omega = (2 * Math.PI) / CYCLE;
+          const x = r.cx + Math.sin(omega * cycleT + r.phase) * r.ax;
+          const y = r.cy + Math.cos(omega * cycleT * 2 + r.phase) * r.ay;
+          return [x, y];
+        }
+
+        // Kamikaze drones — staged at launchpads above/beside the turret line.
+        // Each is assigned exactly one threat to intercept per cycle.
+        const kamikazes = [
+          { id: 0, padX: 700, padY: 790 },
+          { id: 1, padX: 820, padY: 782 },
+          { id: 2, padX: 940, padY: 790 },
+        ];
+
+        const SWARM_X = [40, 540];
+        const SWARM_Y = [340, 730];
+        const TOTAL_DRONES = 30;
+
+        function rand(a, b) {
+          return a + Math.random() * (b - a);
+        }
+        function clamp(v, a, b) {
+          return Math.max(a, Math.min(b, v));
+        }
+        function easeInOut(t) {
+          return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        }
+        function easeOutCubic(t) {
+          return 1 - Math.pow(1 - t, 3);
+        }
+
+        // --- Build a deterministic swarm. Each drone's motion is a function of
+        // cycleT only. Seamless loop relies on visibility: every drone is dead
+        // (alpha=0) at cycleT=CYCLE, and faded out at cycleT=0 (alpha ramps in
+        // from 0 over the first 0.6s). So visual state matches at the seam.
+        const drones = [];
+        for (let i = 0; i < TOTAL_DRONES; i++) {
+          // Initial cluster spot — positioned in left-mid swarm region.
+          const startX = rand(SWARM_X[0] - 40, SWARM_X[1] - 80);
+          const baseY = rand(SWARM_Y[0], SWARM_Y[1]);
+          drones.push({
+            id: i,
+            // Drift origin
+            sx: startX,
+            sy: baseY,
+            r: rand(1.4, 2.4),
+            // Linear drift speed — net rightward toward defenders.
+            // Drones are invisible at both endpoints so net drift is fine.
+            driftVx: rand(34, 52), // px/sec
+            driftVy: rand(-3, 3),
+            // Turbulence amplitudes
+            ampX: rand(5, 11),
+            ampY: rand(4, 9),
+            // Phase: unique seed
+            ph: rand(0, Math.PI * 2),
+            ph2: rand(0, Math.PI * 2),
+            // Turbulence frequencies (don't need to be periodic — drones invisible at seam)
+            wx: rand(0.6, 1.1),
+            wxx: rand(1.5, 2.6),
+            wy: rand(0.7, 1.2),
+            wyy: rand(2.0, 3.0),
+            killT: -1,
+            defenderId: -1,
+          });
+        }
+
+        // Plan engagement schedule deterministically (so each loop is identical).
+        // Some threats are intercepted by kamikaze drones; the rest are taken
+        // by turrets, distributed by y-band (sectors) with staggered fire times.
+        function plan() {
+          const indexed = drones.map((_, i) => i);
+
+          // Pick the 3 most-forward threats (largest sx) for kamikaze intercept.
+          // These are the leading edge of the storm — high-priority targets.
+          indexed.sort((a, b) => drones[b].sx - drones[a].sx);
+          const kamikazeIds = indexed.slice(0, kamikazes.length);
+          const kamikazeKillTimes = [5.85, 6.45, 7.05];
+          kamikazeIds.forEach((id, k) => {
+            const d = drones[id];
+            d.killerType = "kamikaze";
+            d.killerId = k;
+            d.defenderId = -1;
+            d.killT = kamikazeKillTimes[k];
+          });
+
+          // Remaining threats go to turrets, grouped by y-band into 5 sectors.
+          const remaining = indexed.slice(kamikazes.length);
+          remaining.sort((a, b) => drones[a].sy - drones[b].sy);
+          const groupSize = Math.ceil(remaining.length / 5);
+          for (let g = 0; g < 5; g++) {
+            const slice = remaining.slice(g * groupSize, (g + 1) * groupSize);
+            // Order by initial distance to defender (closer first)
+            slice.sort((a, b) => {
+              const A = drones[a],
+                B = drones[b];
+              const dA = Math.hypot(A.sx - defenders[g].x, A.sy - defenders[g].y);
+              const dB = Math.hypot(B.sx - defenders[g].x, B.sy - defenders[g].y);
+              return dA - dB;
+            });
+            const win = PHASE.engageEnd - PHASE.engage;
+            const per = win / Math.max(1, slice.length);
+            slice.forEach((id, k) => {
+              const d = drones[id];
+              d.killerType = "turret";
+              d.killerId = g;
+              d.defenderId = g;
+              const seed = (id * 9301 + 49297) % 233280;
+              const jitter = (seed / 233280) * 0.18 - 0.09;
+              d.killT = PHASE.engage + g * 0.05 + k * per + jitter;
+            });
+          }
+        }
+        plan();
+
+        // Look up which threat each kamikaze is assigned to (for trajectory).
+        const kamikazeTargetId = kamikazes.map((k) => {
+          for (let i = 0; i < drones.length; i++) {
+            if (
+              drones[i].killerType === "kamikaze" &&
+              drones[i].killerId === k.id
+            )
+              return i;
+          }
+          return -1;
+        });
+
+        function kamikazePosition(k, cycleT) {
+          const tid = kamikazeTargetId[k.id];
+          if (tid < 0) return [k.padX, k.padY, 0, 0];
+          const target = drones[tid];
+          const travelDur = 0.85;
+          const launchT = target.killT - travelDur;
+          const fadeIn = 0.6;
+
+          // After impact: gone (matches cycleT=0 fade-in for seamless loop)
+          if (cycleT >= target.killT) return [0, 0, 0, 0];
+
+          // At pad — fade in over the first fadeIn seconds, then steady hover
+          if (cycleT < launchT) {
+            const omega = (2 * Math.PI) / CYCLE;
+            const bobX =
+              Math.sin(omega * cycleT * 4 + k.id * 1.7) * 1.3;
+            const bobY =
+              Math.cos(omega * cycleT * 4 + k.id * 1.7) * 1.6;
+            const alpha = clamp(cycleT / fadeIn, 0, 1);
+            return [k.padX + bobX, k.padY + bobY, alpha, 0];
+          }
+
+          // In flight — accelerate from pad toward target's impact position
+          const progress = (cycleT - launchT) / travelDur;
+          const eased = progress * progress;
+          const [tx, ty] = dronePosition(target, cycleT);
+          const x = k.padX + (tx - k.padX) * eased;
+          const y = k.padY + (ty - k.padY) * eased;
+          const angle = Math.atan2(ty - k.padY, tx - k.padX);
+          return [x, y, 1, angle];
+        }
+
+        // Communications packets — fully deterministic schedule.
+        // Each endpoint is ['def'|'recon'|'kam', id].
+        const comms = [];
+        function planComms() {
+          comms.length = 0;
+          const start = PHASE.comms;
+          // Defender ↔ defender mesh chatter (bidirectional)
+          for (let i = 0; i < defenders.length; i++) {
+            for (let j = i + 1; j < defenders.length; j++) {
+              const t1 = start + ((i + j) % 5) * 0.06 + 0.02;
+              const t2 = start + 0.35 + ((i * 2 + j) % 5) * 0.06;
+              comms.push({
+                from: ["def", i],
+                to: ["def", j],
+                t: t1,
+                dur: 0.55,
+              });
+              comms.push({
+                from: ["def", j],
+                to: ["def", i],
+                t: t2,
+                dur: 0.55,
+              });
+            }
+          }
+          // Recon → every defender, fanning out as soon as detection happens
+          for (const r of recons) {
+            for (let i = 0; i < defenders.length; i++) {
+              const t = PHASE.detect + 0.18 + i * 0.07 + r.id * 0.35;
+              comms.push({
+                from: ["recon", r.id],
+                to: ["def", i],
+                t,
+                dur: 0.8,
+              });
+            }
+          }
+          // Defender → kamikaze: target assignment during the assign window
+          for (const k of kamikazes) {
+            const fromDefId = k.id % defenders.length;
+            const t = PHASE.assign + 0.1 + k.id * 0.18;
+            comms.push({
+              from: ["def", fromDefId],
+              to: ["kam", k.id],
+              t,
+              dur: 0.6,
+            });
+          }
+        }
+        planComms();
+
+        // Endpoint position lookup (used by comms & assignment lines).
+        // Returns [x, y] in reference space.
+        function nodeAnchor(ep, cycleT) {
+          const [type, id] = ep;
+          if (type === "def") {
+            return [defenders[id].x, defenders[id].y - 10];
+          }
+          if (type === "recon") {
+            const [x, y] = reconPosition(recons[id], cycleT);
+            return [x, y];
+          }
+          if (type === "kam") {
+            const [x, y, a] = kamikazePosition(kamikazes[id], cycleT);
+            // If kamikaze is gone, fall back to its pad so packets still
+            // resolve; alpha handling lives in the packet timing window.
+            if (a <= 0) return [kamikazes[id].padX, kamikazes[id].padY];
+            return [x, y];
+          }
+          return [0, 0];
+        }
+
+        // ---- Drawing ----
+        function dronePosition(d, cycleT) {
+          // Linear drift + turbulence. Drones are invisible at cycle seam so
+          // continuity in position isn't required across the seam.
+          const x =
+            d.sx +
+            d.driftVx * cycleT +
+            Math.sin(d.wx * cycleT + d.ph) * d.ampX +
+            Math.cos(d.wxx * cycleT + d.ph2) * 4;
+          const y =
+            d.sy +
+            d.driftVy * cycleT +
+            Math.cos(d.wy * cycleT + d.ph) * d.ampY +
+            Math.sin(d.wyy * cycleT + d.ph2) * 2;
+          return [x, y];
+        }
+
+        function droneAlpha(d, cycleT) {
+          // Fade-in at start of cycle (0..0.6s spawn).
+          // Fade-out around killT (0.18s). Stays gone until cycle wraps.
+          const spawnEnd = 0.6;
+          const spawnA = clamp(cycleT / spawnEnd, 0, 1);
+          if (d.killT < 0 || cycleT < d.killT) return spawnA;
+          // After kill: 0 alpha
+          return 0;
+        }
+
+        function drawBackground(cycleT) {
+          const ctx = bgCtx;
+          ctx.clearRect(-200, -200, W + 400, H + 400);
+
+          // Topographic horizon lines
+          for (let i = 0; i < 14; i++) {
+            const y = GROUND_Y - i * 18;
+            const opacity = clamp(0.16 - i * 0.011, 0.02, 0.16);
+            ctx.strokeStyle = `rgba(212, 168, 75, ${opacity})`;
+            ctx.lineWidth = i === 0 ? 1.1 : 0.6;
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(W, y);
+            ctx.stroke();
+          }
+
+          // Vertical sparse grid lines
+          ctx.strokeStyle = "rgba(212, 168, 75, 0.05)";
+          ctx.lineWidth = 0.5;
+          for (let x = 0; x <= W; x += 80) {
+            ctx.beginPath();
+            ctx.moveTo(x, 540);
+            ctx.lineTo(x, GROUND_Y);
+            ctx.stroke();
+          }
+
+          // Ground line
+          ctx.strokeStyle = "rgba(212, 168, 75, 0.32)";
+          ctx.lineWidth = 1.1;
+          ctx.beginPath();
+          ctx.moveTo(0, GROUND_Y);
+          ctx.lineTo(W, GROUND_Y);
+          ctx.stroke();
+
+          // Tick marks under ground
+          ctx.strokeStyle = "rgba(212, 168, 75, 0.18)";
+          ctx.lineWidth = 0.6;
+          for (let x = 40; x < W; x += 40) {
+            ctx.beginPath();
+            ctx.moveTo(x, GROUND_Y);
+            ctx.lineTo(x, GROUND_Y + (x % 80 === 0 ? 8 : 4));
+            ctx.stroke();
+          }
+
+          // Faint horizon glow band
+          const horizonGrad = bgCtx.createLinearGradient(
+            0,
+            GROUND_Y - 60,
+            0,
+            GROUND_Y,
+          );
+          horizonGrad.addColorStop(0, "rgba(212, 168, 75, 0)");
+          horizonGrad.addColorStop(1, "rgba(212, 168, 75, 0.07)");
+          ctx.fillStyle = horizonGrad;
+          ctx.fillRect(0, GROUND_Y - 60, W, 60);
+
+          // Background storm haze (subtle, periodic so it loops)
+          const stormCenterX =
+            290 + Math.sin((cycleT * 2 * Math.PI) / CYCLE) * 10;
+          const stormCenterY = 540;
+          const haze = bgCtx.createRadialGradient(
+            stormCenterX,
+            stormCenterY,
+            10,
+            stormCenterX,
+            stormCenterY,
+            520,
+          );
+          haze.addColorStop(0, "rgba(120, 30, 30, 0.16)");
+          haze.addColorStop(0.5, "rgba(80, 20, 20, 0.05)");
+          haze.addColorStop(1, "rgba(0,0,0,0)");
+          ctx.fillStyle = haze;
+          ctx.fillRect(0, 0, W, GROUND_Y);
+        }
+
+        function drawDrone(ctx, d, cycleT) {
+          const a = droneAlpha(d, cycleT);
+          if (a <= 0.001) return;
+          const [x, y] = dronePosition(d, cycleT);
+          const hazeR = d.r * 4.5;
+          const grad = ctx.createRadialGradient(x, y, 0, x, y, hazeR);
+          grad.addColorStop(0, `rgba(220, 92, 92, ${0.35 * a})`);
+          grad.addColorStop(1, "rgba(220, 92, 92, 0)");
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(x, y, hazeR, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = `rgba(220, 92, 92, ${0.95 * a})`;
+          ctx.beginPath();
+          ctx.arc(x, y, d.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        function drawDeathFlash(ctx, d, cycleT) {
+          // Brief flash + ring at killT
+          if (d.killT < 0) return;
+          const dt = cycleT - d.killT;
+          if (dt < 0 || dt > 0.45) return;
+          const [x, y] = dronePosition(d, d.killT); // freeze at moment of kill
+          if (dt < 0.18) {
+            const flashT = dt / 0.18;
+            const flashR = 4 + flashT * 16;
+            const grad = ctx.createRadialGradient(x, y, 0, x, y, flashR);
+            grad.addColorStop(0, `rgba(245, 200, 112, ${(1 - flashT) * 0.95})`);
+            grad.addColorStop(1, "rgba(245, 200, 112, 0)");
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(x, y, flashR, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          // Expanding ring
+          const ringT = dt / 0.45;
+          const ringR = 3 + ringT * 22;
+          ctx.strokeStyle = `rgba(212, 168, 75, ${(1 - ringT) * 0.85})`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(x, y, ringR, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        function drawDefender(ctx, def, cycleT) {
+          ctx.save();
+          // Detect pulse on first defender, then quickly cascading to others
+          // (to convey detection -> network alert)
+          const detectStart = PHASE.detect + def.id * 0.08;
+          const dPulse =
+            cycleT >= detectStart && cycleT < detectStart + 0.7
+              ? 1 - (cycleT - detectStart) / 0.7
+              : 0;
+
+          // Is firing right now?
+          let isFiring = false;
+          for (const d of drones) {
+            if (
+              d.defenderId === def.id &&
+              cycleT >= d.killT - 0.18 &&
+              cycleT < d.killT + 0.05
+            ) {
+              isFiring = true;
+              break;
+            }
+          }
+
+          // Base pad
+          ctx.strokeStyle = "rgba(212, 168, 75, 0.55)";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(def.x - 14, def.y);
+          ctx.lineTo(def.x + 14, def.y);
+          ctx.stroke();
+
+          // Glow under turret
+          const glowR = 22 + dPulse * 18 + (isFiring ? 6 : 0);
+          const g = ctx.createRadialGradient(
+            def.x,
+            def.y - 6,
+            0,
+            def.x,
+            def.y - 6,
+            glowR,
+          );
+          g.addColorStop(0, "rgba(212, 168, 75, 0.55)");
+          g.addColorStop(1, "rgba(212, 168, 75, 0)");
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(def.x, def.y - 6, glowR, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Triangle turret silhouette
+          ctx.beginPath();
+          ctx.moveTo(def.x, def.y - 18);
+          ctx.lineTo(def.x - 8, def.y);
+          ctx.lineTo(def.x + 8, def.y);
+          ctx.closePath();
+          ctx.fillStyle = isFiring ? "#f5c870" : "#d4a84b";
+          ctx.fill();
+          ctx.strokeStyle = "rgba(255,255,255,0.25)";
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+
+          // Detect pulse ring
+          if (dPulse > 0) {
+            ctx.strokeStyle = `rgba(212, 168, 75, ${dPulse * 0.9})`;
+            ctx.lineWidth = 1.3;
+            ctx.beginPath();
+            ctx.arc(
+              def.x,
+              def.y - 6,
+              14 + (1 - dPulse) * 30,
+              0,
+              Math.PI * 2,
+            );
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        function drawNetworkLines(ctx, cycleT) {
+          ctx.save();
+          // Network gets brighter once detect happens, and fades back to baseline
+          // by end of cycle so the seam is continuous.
+          let networkActive = 0;
+          if (cycleT >= PHASE.detect && cycleT < PHASE.engageEnd) {
+            networkActive = clamp((cycleT - PHASE.detect) / 0.6, 0, 1);
+          } else if (cycleT >= PHASE.engageEnd) {
+            // Fade back to 0 over (CYCLE - engageEnd)
+            networkActive = clamp(
+              1 - (cycleT - PHASE.engageEnd) / (CYCLE - PHASE.engageEnd),
+              0,
+              1,
+            );
+          }
+          const baseAlpha = 0.06 + networkActive * 0.1;
+          ctx.strokeStyle = `rgba(212, 168, 75, ${baseAlpha})`;
+          ctx.lineWidth = 0.6;
+          for (let i = 0; i < defenders.length; i++) {
+            for (let j = i + 1; j < defenders.length; j++) {
+              const a = defenders[i];
+              const b = defenders[j];
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y - 10);
+              ctx.lineTo(b.x, b.y - 10);
+              ctx.stroke();
+            }
+          }
+          ctx.restore();
+        }
+
+        function drawCommsPackets(ctx, cycleT) {
+          ctx.save();
+          for (const c of comms) {
+            const t = (cycleT - c.t) / c.dur;
+            if (t < 0 || t > 1) continue;
+            const [ax, ay] = nodeAnchor(c.from, cycleT);
+            const [bx, by] = nodeAnchor(c.to, cycleT);
+            const ease = easeInOut(t);
+            const px = ax + (bx - ax) * ease;
+            const py = ay + (by - ay) * ease;
+            const trailEase = Math.max(0, ease - 0.18);
+            const tx = ax + (bx - ax) * trailEase;
+            const ty = ay + (by - ay) * trailEase;
+            const grad = ctx.createLinearGradient(tx, ty, px, py);
+            grad.addColorStop(0, "rgba(212, 168, 75, 0)");
+            grad.addColorStop(1, "rgba(245, 200, 112, 0.95)");
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 1.4;
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(px, py);
+            ctx.stroke();
+
+            ctx.fillStyle = "#f5c870";
+            ctx.shadowColor = "rgba(212, 168, 75, 0.9)";
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.arc(px, py, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+          ctx.restore();
+        }
+
+        function drawSectorAssignments(ctx, cycleT) {
+          // Visible during assign->engage handoff window
+          const start = PHASE.assign;
+          const end = PHASE.engage + 0.8;
+          if (cycleT < start || cycleT > end) return;
+          const lifeT = clamp((cycleT - start) / 0.6, 0, 1);
+          const fadeT = clamp((end - cycleT) / 0.6, 0, 1);
+          const alpha = Math.min(lifeT, fadeT);
+
+          ctx.save();
+          // Sector hulls — faint colored region around each defender's targets
+          for (const def of defenders) {
+            const ts = drones.filter(
+              (d) => d.defenderId === def.id && cycleT < d.killT,
+            );
+            if (ts.length < 3) continue;
+            let mx = 0,
+              my = 0;
+            for (const d of ts) {
+              const [x, y] = dronePosition(d, cycleT);
+              mx += x;
+              my += y;
+            }
+            mx /= ts.length;
+            my /= ts.length;
+            let spX = 0,
+              spY = 0;
+            for (const d of ts) {
+              const [x, y] = dronePosition(d, cycleT);
+              spX = Math.max(spX, Math.abs(x - mx));
+              spY = Math.max(spY, Math.abs(y - my));
+            }
+            const grad = ctx.createRadialGradient(
+              mx,
+              my,
+              0,
+              mx,
+              my,
+              Math.max(spX, spY) + 60,
+            );
+            grad.addColorStop(0, `rgba(212, 168, 75, ${alpha * 0.07})`);
+            grad.addColorStop(1, "rgba(212, 168, 75, 0)");
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.ellipse(mx, my, spX + 50, spY + 35, 0, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Thin lines from defender to its targets
+          ctx.strokeStyle = `rgba(212, 168, 75, ${alpha * 0.16})`;
+          ctx.lineWidth = 0.5;
+          for (const def of defenders) {
+            for (const d of drones) {
+              if (d.defenderId !== def.id) continue;
+              if (cycleT >= d.killT) continue;
+              const [x, y] = dronePosition(d, cycleT);
+              ctx.beginPath();
+              ctx.moveTo(def.x, def.y - 14);
+              ctx.lineTo(x, y);
+              ctx.stroke();
+            }
+          }
+          ctx.restore();
+        }
+
+        function drawRecon(ctx, r, cycleT) {
+          const [x, y] = reconPosition(r, cycleT);
+          ctx.save();
+          ctx.translate(x, y);
+
+          // Subtle ambient glow
+          const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, 22);
+          glow.addColorStop(0, "rgba(212, 168, 75, 0.3)");
+          glow.addColorStop(1, "rgba(212, 168, 75, 0)");
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(0, 0, 22, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Quad-rotor footprint: four small rotor pods at corners with
+          // shimmering ellipses to suggest spinning
+          const omega = (2 * Math.PI) / CYCLE;
+          const spin = Math.sin(omega * cycleT * 32 + r.id) * 0.5 + 0.5;
+          const pods = [
+            [-7, -4],
+            [7, -4],
+            [-7, 4],
+            [7, 4],
+          ];
+          ctx.strokeStyle = "rgba(212, 168, 75, 0.55)";
+          ctx.lineWidth = 0.7;
+          for (const [px, py] of pods) {
+            ctx.beginPath();
+            ctx.ellipse(px, py, 3.4, 1.4, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = `rgba(245, 200, 112, ${0.25 + spin * 0.4})`;
+            ctx.beginPath();
+            ctx.arc(px, py, 0.9, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Body — small chevron pointing forward (toward swarm = -x)
+          ctx.fillStyle = "#d4a84b";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.25)";
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(-6, 0);
+          ctx.lineTo(4, -3.2);
+          ctx.lineTo(4, 3.2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Status blink (slow steady)
+          const blink =
+            (Math.sin(omega * cycleT * 6 + r.id * 2) + 1) * 0.5;
+          ctx.fillStyle = `rgba(245, 200, 112, ${0.4 + blink * 0.5})`;
+          ctx.beginPath();
+          ctx.arc(2, 0, 0.9, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.restore();
+        }
+
+        function drawReconScans(ctx, cycleT) {
+          // Scan cones from each recon, sweeping forward (toward -x).
+          // Always faintly visible (recon is always scanning), pulses brighter
+          // during the detect window, then dims back to baseline.
+          const baseline = 0.05;
+          let intensity = baseline;
+          if (cycleT >= PHASE.detect && cycleT < PHASE.detect + 1.0) {
+            const t = (cycleT - PHASE.detect) / 1.0;
+            intensity = baseline + (1 - t) * 0.55;
+          } else if (cycleT >= PHASE.detect + 1.0 && cycleT < PHASE.engage) {
+            // Stay slightly elevated through the comms/assign window
+            intensity = baseline + 0.12;
+          }
+
+          ctx.save();
+          for (const r of recons) {
+            const [rx, ry] = reconPosition(r, cycleT);
+            const range = 220;
+            const half = (Math.PI / 180) * 28; // ±28°
+            // Subtle sweep: small wobble in pointing direction so it looks alive
+            const omega = (2 * Math.PI) / CYCLE;
+            const wob = Math.sin(omega * cycleT * 2 + r.id * 1.4) * 0.06;
+            const aim = Math.PI + wob; // pointing -x
+
+            // Filled cone
+            const grad = ctx.createRadialGradient(rx, ry, 0, rx, ry, range);
+            grad.addColorStop(0, `rgba(212, 168, 75, ${intensity * 0.6})`);
+            grad.addColorStop(0.5, `rgba(212, 168, 75, ${intensity * 0.18})`);
+            grad.addColorStop(1, "rgba(212, 168, 75, 0)");
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.moveTo(rx, ry);
+            ctx.arc(rx, ry, range, aim - half, aim + half);
+            ctx.closePath();
+            ctx.fill();
+
+            // Cone edges
+            ctx.strokeStyle = `rgba(212, 168, 75, ${intensity * 0.7})`;
+            ctx.lineWidth = 0.7;
+            ctx.beginPath();
+            ctx.moveTo(rx, ry);
+            ctx.lineTo(
+              rx + Math.cos(aim - half) * range,
+              ry + Math.sin(aim - half) * range,
+            );
+            ctx.moveTo(rx, ry);
+            ctx.lineTo(
+              rx + Math.cos(aim + half) * range,
+              ry + Math.sin(aim + half) * range,
+            );
+            ctx.stroke();
+
+            // Sweep arc (animated edge, periodic)
+            const sweepPhase =
+              ((cycleT * 1.5) % 1.0) * (half * 2) - half;
+            ctx.strokeStyle = `rgba(245, 200, 112, ${intensity * 0.85})`;
+            ctx.lineWidth = 0.9;
+            ctx.beginPath();
+            ctx.moveTo(rx, ry);
+            ctx.lineTo(
+              rx + Math.cos(aim + sweepPhase) * range,
+              ry + Math.sin(aim + sweepPhase) * range,
+            );
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        function drawKamikaze(ctx, k, cycleT) {
+          const [x, y, alpha, angle] = kamikazePosition(k, cycleT);
+          if (alpha <= 0.01) return;
+          const tid = kamikazeTargetId[k.id];
+          const target = tid >= 0 ? drones[tid] : null;
+          const travelDur = 0.85;
+          const launchT = target ? target.killT - travelDur : Infinity;
+          const inFlight = cycleT >= launchT && cycleT < (target ? target.killT : 0);
+
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(angle);
+          ctx.globalAlpha = alpha;
+
+          // Trail behind (only in flight)
+          if (inFlight) {
+            const grad = ctx.createLinearGradient(-22, 0, 0, 0);
+            grad.addColorStop(0, "rgba(245, 200, 112, 0)");
+            grad.addColorStop(1, "rgba(245, 200, 112, 0.85)");
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(-22, 0);
+            ctx.lineTo(-2, 0);
+            ctx.stroke();
+          }
+
+          // Glow halo
+          const glowR = inFlight ? 9 : 6;
+          const halo = ctx.createRadialGradient(0, 0, 0, 0, 0, glowR);
+          halo.addColorStop(0, `rgba(245, 200, 112, ${inFlight ? 0.5 : 0.35})`);
+          halo.addColorStop(1, "rgba(245, 200, 112, 0)");
+          ctx.fillStyle = halo;
+          ctx.beginPath();
+          ctx.arc(0, 0, glowR, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Body — sharp dart pointing forward (+x in local frame)
+          ctx.fillStyle = inFlight ? "#f5c870" : "#d4a84b";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(5, 0);
+          ctx.lineTo(-3, -2.2);
+          ctx.lineTo(-1.5, 0);
+          ctx.lineTo(-3, 2.2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.restore();
+        }
+
+        function drawKamikazePads(ctx, cycleT) {
+          // Static markers at each kamikaze pad
+          ctx.save();
+          ctx.strokeStyle = "rgba(212, 168, 75, 0.35)";
+          ctx.lineWidth = 0.7;
+          for (const k of kamikazes) {
+            ctx.beginPath();
+            ctx.moveTo(k.padX - 8, k.padY + 6);
+            ctx.lineTo(k.padX + 8, k.padY + 6);
+            ctx.stroke();
+            // Tiny tick marks below
+            ctx.beginPath();
+            ctx.moveTo(k.padX - 5, k.padY + 8);
+            ctx.lineTo(k.padX - 5, k.padY + 11);
+            ctx.moveTo(k.padX + 5, k.padY + 8);
+            ctx.lineTo(k.padX + 5, k.padY + 11);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        function drawKamikazeAssignments(ctx, cycleT) {
+          // Brief tracer line from kamikaze pad toward its assigned threat
+          // during the assignment window (tells the viewer the kamikaze knows
+          // where it's going).
+          const start = PHASE.assign + 0.2;
+          const end = PHASE.engage + 0.4;
+          if (cycleT < start || cycleT > end) return;
+          const lifeT = clamp((cycleT - start) / 0.4, 0, 1);
+          const fadeT = clamp((end - cycleT) / 0.5, 0, 1);
+          const alpha = Math.min(lifeT, fadeT);
+          if (alpha <= 0.01) return;
+
+          ctx.save();
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = `rgba(245, 200, 112, ${alpha * 0.4})`;
+          ctx.lineWidth = 0.8;
+          for (const k of kamikazes) {
+            const tid = kamikazeTargetId[k.id];
+            if (tid < 0) continue;
+            const target = drones[tid];
+            if (cycleT >= target.killT) continue;
+            const [tx, ty] = dronePosition(target, cycleT);
+            ctx.beginPath();
+            ctx.moveTo(k.padX, k.padY);
+            ctx.lineTo(tx, ty);
+            ctx.stroke();
+          }
+          ctx.setLineDash([]);
+          ctx.restore();
+        }
+
+        function drawBeams(ctx, cycleT) {
+          ctx.save();
+          for (const d of drones) {
+            if (d.killT < 0) continue;
+            // Only turret kills produce a beam; kamikaze kills are kinetic.
+            if (d.killerType !== "turret") continue;
+            const fireDur = 0.18;
+            const fireT = d.killT - fireDur;
+            const hitT = d.killT;
+            if (cycleT < fireT || cycleT > hitT + 0.05) continue;
+
+            const def = defenders[d.defenderId];
+            const [tx, ty] = dronePosition(d, cycleT);
+            const t = clamp((cycleT - fireT) / fireDur, 0, 1);
+            const muzzleX = def.x;
+            const muzzleY = def.y - 14;
+            const tipX = muzzleX + (tx - muzzleX) * easeOutCubic(t);
+            const tipY = muzzleY + (ty - muzzleY) * easeOutCubic(t);
+
+            // Outer glow
+            ctx.strokeStyle = "rgba(212, 168, 75, 0.18)";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(muzzleX, muzzleY);
+            ctx.lineTo(tipX, tipY);
+            ctx.stroke();
+
+            // Core beam
+            ctx.strokeStyle = "rgba(245, 200, 112, 0.95)";
+            ctx.lineWidth = 1.1;
+            ctx.beginPath();
+            ctx.moveTo(muzzleX, muzzleY);
+            ctx.lineTo(tipX, tipY);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        // HUD
+        const hudStatusEl = document.getElementById("hudStatusText");
+        const hudPhaseEl = document.getElementById("hudPhaseText");
+        const hudCountEl = document.getElementById("hudCount");
+
+        function updateHUD(cycleT) {
+          let alive = 0;
+          for (const d of drones) {
+            if (d.killT < 0 || cycleT < d.killT) alive++;
+          }
+          hudCountEl.textContent = String(alive).padStart(2, "0");
+
+          let phase, status;
+          if (cycleT < PHASE.detect) {
+            phase = "MONITORING";
+            status = "SCANNING";
+          } else if (cycleT < PHASE.comms) {
+            phase = "THREAT DETECTED";
+            status = "ALERT";
+          } else if (cycleT < PHASE.assign) {
+            phase = "NETWORK HANDOFF";
+            status = "SYNCING";
+          } else if (cycleT < PHASE.engage) {
+            phase = "SECTORS ASSIGNED";
+            status = "TARGETING";
+          } else if (cycleT < PHASE.engageEnd) {
+            phase = "ENGAGE";
+            status = "FIRING";
+          } else {
+            phase = "REFORMING";
+            status = "SCANNING";
+          }
+          hudPhaseEl.textContent = phase;
+          hudStatusEl.textContent = status;
+        }
+
+        // ---- Animation loop ----
+        let startTime = performance.now() / 1000;
+
+        // Optional ?speed=N URL param — embedders (like the slideshow) can
+        // request a faster playback so more of the cycle is seen in less time.
+        const speedParam = parseFloat(
+          new URLSearchParams(location.search).get("speed"),
+        );
+        const PLAYBACK_SPEED =
+          isFinite(speedParam) && speedParam > 0 ? speedParam : 1;
+
+        function frame(now) {
+          const t = (now / 1000 - startTime) * PLAYBACK_SPEED;
+          // Modular cycleT — entire animation is a function of cycleT only,
+          // so wrapping is automatically seamless.
+          const cycleT = ((t % CYCLE) + CYCLE) % CYCLE;
+
+          drawBackground(cycleT);
+
+          // FX layer
+          fxCtx.clearRect(-200, -200, W + 400, H + 400);
+
+          // Recon scan cones go down first so they sit beneath everything
+          drawReconScans(fxCtx, cycleT);
+
+          drawNetworkLines(fxCtx, cycleT);
+          drawSectorAssignments(fxCtx, cycleT);
+          drawKamikazeAssignments(fxCtx, cycleT);
+
+          // Drones
+          for (const d of drones) drawDrone(fxCtx, d, cycleT);
+
+          // Defenders & static pads
+          drawKamikazePads(fxCtx, cycleT);
+          for (const def of defenders) drawDefender(fxCtx, def, cycleT);
+
+          // Beams (in flight)
+          drawBeams(fxCtx, cycleT);
+
+          // Kamikaze drones (above beams, below death flashes)
+          for (const k of kamikazes) drawKamikaze(fxCtx, k, cycleT);
+
+          // Recon drones (airborne, draw above ground systems)
+          for (const r of recons) drawRecon(fxCtx, r, cycleT);
+
+          // Death flashes (rings) — drawn after beams/kamikazes
+          for (const d of drones) drawDeathFlash(fxCtx, d, cycleT);
+
+          // Comms packets on top
+          drawCommsPackets(fxCtx, cycleT);
+
+          updateHUD(cycleT);
+
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      })();
     </script>
   </body>
 </html>
